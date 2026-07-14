@@ -78,7 +78,10 @@
             document.getElementById('loading').style.display = 'block';
             try {
                 const response = await fetch(SCRIPT_URL);
-                usersData = await response.json();
+                const data = await response.json();
+                
+                // تعديل هنا ليقرأ من data.users بسبب السكربت الجديد
+                usersData = data.users || []; 
                 usersData.sort((a, b) => b.balance - a.balance);
                 renderTable(usersData);
             } catch (error) {
@@ -97,7 +100,7 @@
                 tr.innerHTML = `
                     <td class="${rankClass}">${rankText}</td>
                     <td style="color: #fff;">${user.name}</td>
-                    <td>${user.balance}</td>
+                    <td dir="ltr">${user.balance}</td>
                 `;
                 tbody.appendChild(tr);
             });
