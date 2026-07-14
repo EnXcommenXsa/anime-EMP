@@ -5,87 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-width=1.0">
     <title>إدارة الإمبراطورية | سري</title>
     <style>
-        :root { --bg: #0d0d0d; --primary: #d10000; --surface: #1a1a1a; }
-        body { font-family: Tahoma, sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; }
-        h2 { text-align: center; color: var(--primary); margin-bottom: 20px; }
-        .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 10px; min-width: 45%; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { background: var(--primary); }
-        .form-section { background: var(--surface); padding: 20px; border-radius: 10px; display: none; border: 1px solid #333; }
+        :root { 
+            --bg-color: #050505; 
+            --surface-color: #111; 
+            --primary-color: #e60000; 
+            --text-color: #f2f2f2; 
+            --glow: 0 0 10px rgba(230, 0, 0, 0.5);
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; padding: 20px; 
+            background-image: radial-gradient(circle at 50% 0%, #2a0000 0%, #050505 60%);
+            background-attachment: fixed;
+        }
+        .container {
+            max-width: 600px; margin: auto; background: rgba(17, 17, 17, 0.9);
+            padding: 25px; border-radius: 15px; border: 1px solid #330000;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(230,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+        h2 { text-align: center; color: #fff; margin-bottom: 25px; text-shadow: var(--glow); letter-spacing: 1px; }
+        
+        /* تصميم الأزرار العلوية (التبويبات) */
+        .tabs { display: flex; gap: 8px; margin-bottom: 25px; background: #0a0a0a; padding: 5px; border-radius: 10px; border: 1px solid #222; flex-wrap: wrap;}
+        .tab-btn { 
+            flex: 1; padding: 12px; background: transparent; color: #888; 
+            border: none; border-radius: 8px; cursor: pointer; font-weight: bold; 
+            transition: 0.3s; font-size: 14px; min-width: 40%;
+        }
+        .tab-btn:hover { color: #fff; background: #1a1a1a; }
+        .tab-btn.active { background: var(--primary-color); color: white; box-shadow: var(--glow); }
+        
+        /* الحركات والنماذج */
+        .form-section { display: none; animation: fadeIn 0.4s; }
         .form-section.active { display: block; }
-        label { display: block; margin: 10px 0 5px; color: #aaa; font-size: 14px; }
-        input, select { width: 100%; box-sizing: border-box; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; font-size: 15px; }
-        input:focus, select:focus { border-color: var(--primary); outline: none; }
-        .submit-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px; margin-top: 15px; cursor: pointer; }
-        .submit-btn:active { opacity: 0.8; }
-        #status { text-align: center; margin-top: 15px; font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        label { display: block; margin: 15px 0 8px; color: #bbb; font-size: 14px; font-weight: bold;}
+        
+        /* تصميم الخانات */
+        input, select { 
+            width: 100%; box-sizing: border-box; padding: 14px; 
+            background: #0a0a0a; border: 1px solid #333; color: white; 
+            border-radius: 8px; font-size: 15px; transition: 0.3s;
+        }
+        input:focus, select:focus { border-color: var(--primary-color); outline: none; box-shadow: inset 0 0 8px rgba(230,0,0,0.3); }
+        
+        /* 🔥 إخفاء الأسهم من خانات الأرقام 🔥 */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* أزرار الإرسال */
+        .submit-btn { 
+            width: 100%; padding: 15px; margin-top: 25px; color: white; 
+            border: none; border-radius: 8px; font-weight: bold; font-size: 16px; 
+            cursor: pointer; transition: 0.3s; text-transform: uppercase;
+        }
+        .submit-btn:hover { transform: translateY(-2px); }
+        .submit-btn:active { transform: translateY(0); opacity: 0.9; }
+        .btn-green { background: linear-gradient(45deg, #1e7e34, #28a745); box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); }
+        .btn-red { background: linear-gradient(45deg, #8b0000, #d10000); box-shadow: 0 4px 15px rgba(209, 0, 0, 0.4); }
+        .btn-dark { background: linear-gradient(45deg, #222, #444); border: 1px solid #555; }
+        
+        #status { text-align: center; margin-top: 20px; font-weight: bold; padding: 15px; border-radius: 8px; display: none; }
+        hr { border: 0; height: 1px; background: #333; margin: 25px 0; }
     </style>
 </head>
 <body>
 
-    <h2>لوحة تحكم اللجنة</h2>
+    <div class="container">
+        <h2>♛ مركز إدارة الإمبراطورية ♛</h2>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('add-member')">إضافة عضو</button>
-        <button class="tab-btn" onclick="showTab('delete-member')">إزالة عضو</button>
-        <button class="tab-btn" onclick="showTab('add-coins')">إضافة عملات</button>
-        <button class="tab-btn" onclick="showTab('deduct-coins')">خصم عملات</button>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('add-member')">إضافة عضو</button>
+            <button class="tab-btn" onclick="showTab('delete-member')">إزالة عضو</button>
+            <button class="tab-btn" onclick="showTab('add-coins')">إضافة عملات</button>
+            <button class="tab-btn" onclick="showTab('deduct-coins')">خصم عملات</button>
+        </div>
+
+        <label>🔑 الرمز السري (مطلوب):</label>
+        <input type="password" id="globalPass" placeholder="أدخل الرمز السري هنا...">
+        <hr>
+
+        <!-- 1. إضافة عضو -->
+        <div id="add-member" class="form-section active">
+            <label>رابط الحساب:</label>
+            <input type="text" id="addLink" placeholder="ألصق رابط العضو...">
+            <label>لقب العضو:</label>
+            <input type="text" id="addName" placeholder="اكتب اللقب...">
+            <button class="submit-btn btn-green" onclick="submitForm('add_member')">حفظ العضو الجديد</button>
+        </div>
+
+        <!-- 2. إزالة عضو -->
+        <div id="delete-member" class="form-section">
+            <label>ابحث عن العضو:</label>
+            <input type="text" id="delIdentifier" placeholder="اكتب اللقب أو ألصق الرابط...">
+            <button class="submit-btn btn-dark" onclick="submitForm('delete_member')">إزالة ونقل لسجل المحذوفين ⚠️</button>
+        </div>
+
+        <!-- 3. إضافة عملات -->
+        <div id="add-coins" class="form-section">
+            <label>ابحث عن العضو:</label>
+            <input type="text" id="addCoinIdentifier" placeholder="اللقب أو الرابط...">
+            <label>عدد العملات المضافة:</label>
+            <input type="number" id="addCoinAmount" placeholder="أدخل العدد (بدون أسهم)...">
+            <label>سبب الإضافة:</label>
+            <input type="text" id="addCoinReason" placeholder="مثال: مدونة بالرئيسية، مسابقة...">
+            <button class="submit-btn btn-red" onclick="submitForm('add_coins')">+ إضافة الرصيد للعضو</button>
+        </div>
+
+        <!-- 4. خصم عملات -->
+        <div id="deduct-coins" class="form-section">
+            <label>ابحث عن العضو:</label>
+            <input type="text" id="deductIdentifier" placeholder="اللقب أو الرابط...">
+            <label>عدد العملات المخصومة:</label>
+            <input type="number" id="deductAmount" placeholder="أدخل العدد...">
+            <label>نوع الخصم:</label>
+            <select id="deductReason">
+                <option value="شراء من المتجر">شراء من المتجر</option>
+                <option value="عقوبة/مخالفة">عقوبة/مخالفة</option>
+                <option value="أخذ إجازة">أخذ إجازة</option>
+            </select>
+            <label>تفاصيل الخصم (ملاحظات):</label>
+            <input type="text" id="deductNotes" placeholder="ماذا اشترى؟ أو ما سبب المخالفة؟">
+            <button class="submit-btn btn-red" style="background: linear-gradient(45deg, #600, #900);" onclick="submitForm('deduct_coins')">- خصم الرصيد من العضو</button>
+        </div>
+
+        <div id="status"></div>
     </div>
-
-    <!-- كلمة المرور عامة لكل النماذج -->
-    <label>الرمز السري (مطلوب دائماً):</label>
-    <input type="password" id="globalPass" placeholder="أدخل الرمز السري هنا...">
-    <hr style="border-color:#333; margin: 15px 0;">
-
-    <!-- 1. نموذج إضافة عضو -->
-    <div id="add-member" class="form-section active">
-        <label>رابط الحساب:</label>
-        <input type="text" id="addLink" placeholder="رابط العضو...">
-        <label>لقب العضو:</label>
-        <input type="text" id="addName" placeholder="اللقب...">
-        <button class="submit-btn" style="background:#28a745;" onclick="submitForm('add_member')">حفظ العضو الجديد</button>
-    </div>
-
-    <!-- 2. نموذج إزالة عضو -->
-    <div id="delete-member" class="form-section">
-        <label>ابحث عن العضو (الاسم أو الرابط):</label>
-        <input type="text" id="delIdentifier" placeholder="اكتب اللقب أو ألصق الرابط...">
-        <button class="submit-btn" style="background:#444; border:1px solid #777;" onclick="submitForm('delete_member')">إزالة ونقل لسجل المحذوفين ⚠️</button>
-    </div>
-
-    <!-- 3. نموذج إضافة عملات -->
-    <div id="add-coins" class="form-section">
-        <label>ابحث عن العضو (الاسم أو الرابط):</label>
-        <input type="text" id="addCoinIdentifier" placeholder="اللقب أو الرابط...">
-        <label>عدد العملات المضافة:</label>
-        <input type="number" id="addCoinAmount" placeholder="العدد (مثال: 50)...">
-        <label>سبب الإضافة:</label>
-        <input type="text" id="addCoinReason" placeholder="مثال: مدونة بالرئيسية، مسابقة...">
-        <label>اسم المشرف/اللجنة (المسؤول عن الإجراء):</label>
-        <input type="text" id="addCoinAdmin" placeholder="اكتب اسمك...">
-        <button class="submit-btn" onclick="submitForm('add_coins')">+ إضافة الرصيد للعضو</button>
-    </div>
-
-    <!-- 4. نموذج خصم عملات -->
-    <div id="deduct-coins" class="form-section">
-        <label>ابحث عن العضو (الاسم أو الرابط):</label>
-        <input type="text" id="deductIdentifier" placeholder="اللقب أو الرابط...">
-        <label>عدد العملات المخصومة:</label>
-        <input type="number" id="deductAmount" placeholder="العدد (بدون علامة سالب)...">
-        <label>نوع الخصم:</label>
-        <select id="deductReason">
-            <option value="شراء من المتجر">شراء من المتجر</option>
-            <option value="عقوبة/مخالفة">عقوبة/مخالفة</option>
-            <option value="أخذ إجازة">أخذ إجازة</option>
-        </select>
-        <label>صندوق الملاحظات (تفاصيل الخصم):</label>
-        <input type="text" id="deductNotes" placeholder="ماذا اشترى؟ أو ما سبب المخالفة؟">
-        <label>اسم المشرف/اللجنة (المسؤول عن الإجراء):</label>
-        <input type="text" id="deductAdmin" placeholder="اكتب اسمك...">
-        <button class="submit-btn" onclick="submitForm('deduct_coins')">- خصم الرصيد من العضو</button>
-    </div>
-
-    <div id="status"></div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi7NYfcZVfqdcJtJFv4rFdljG1CaAal_SZSDoQ7XDuyhHlIv4n1YLmUxugsUptRyg/exec";
@@ -95,64 +145,64 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
-            document.getElementById('status').innerText = "";
+            document.getElementById('status').style.display = "none";
         }
 
         async function submitForm(actionType) {
             const pass = document.getElementById('globalPass').value;
             const statusDiv = document.getElementById('status');
             
-            if(!pass) { showMsg("الرجاء إدخال الرمز السري أولاً!", "red"); return; }
+            if(!pass) { showMsg("الرجاء إدخال الرمز السري أولاً!", "#ff4d4d", "#330000"); return; }
 
             let payload = { password: pass, action: actionType };
 
             if(actionType === 'add_member') {
                 payload.identifier = document.getElementById('addLink').value;
                 payload.name = document.getElementById('addName').value;
-                if(!payload.identifier || !payload.name) { showMsg("أكمل بيانات العضو!", "red"); return; }
+                if(!payload.identifier || !payload.name) { showMsg("أكمل بيانات العضو!", "#ff4d4d", "#330000"); return; }
             }
             else if(actionType === 'delete_member') {
                 payload.identifier = document.getElementById('delIdentifier').value;
-                if(!payload.identifier) { showMsg("اكتب اسم أو رابط العضو للإزالة!", "red"); return; }
+                if(!payload.identifier) { showMsg("اكتب اسم أو رابط العضو للإزالة!", "#ff4d4d", "#330000"); return; }
                 if(!confirm("هل أنت متأكد من إزالة هذا العضو؟")) return;
             }
             else if(actionType === 'add_coins') {
                 payload.identifier = document.getElementById('addCoinIdentifier').value;
                 payload.amount = document.getElementById('addCoinAmount').value;
                 payload.reason = document.getElementById('addCoinReason').value;
-                payload.adminName = document.getElementById('addCoinAdmin').value;
-                if(!payload.identifier || !payload.amount) { showMsg("البيانات ناقصة!", "red"); return; }
+                if(!payload.identifier || !payload.amount) { showMsg("البيانات ناقصة!", "#ff4d4d", "#330000"); return; }
             }
             else if(actionType === 'deduct_coins') {
                 payload.identifier = document.getElementById('deductIdentifier').value;
                 payload.amount = document.getElementById('deductAmount').value;
                 payload.reason = document.getElementById('deductReason').value;
                 payload.notes = document.getElementById('deductNotes').value;
-                payload.adminName = document.getElementById('deductAdmin').value;
-                if(!payload.identifier || !payload.amount) { showMsg("البيانات ناقصة!", "red"); return; }
+                if(!payload.identifier || !payload.amount) { showMsg("البيانات ناقصة!", "#ff4d4d", "#330000"); return; }
             }
 
-            showMsg("جاري إرسال الطلب...", "yellow");
+            showMsg("⏳ جاري إرسال الطلب...", "#ffd700", "#332b00");
 
             try {
                 const response = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
                 const result = await response.json();
                 
                 if(result.success) {
-                    showMsg(result.message, "#28a745");
-                    // مسح الحقول بعد النجاح (اختياري)
+                    showMsg("✔️ " + result.message, "#28a745", "#0a2911");
                     document.querySelectorAll('input[type="text"]:not(#globalPass), input[type="number"]').forEach(inpt => inpt.value = '');
                 } else {
-                    showMsg(result.error, "red");
+                    showMsg("❌ " + result.error, "#ff4d4d", "#330000");
                 }
             } catch (error) {
-                showMsg("خطأ في الاتصال بالإنترنت.", "red");
+                showMsg("❌ خطأ في الاتصال بالإنترنت.", "#ff4d4d", "#330000");
             }
         }
 
-        function showMsg(msg, color) {
+        function showMsg(msg, color, bgColor) {
             const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
             statusDiv.style.color = color;
+            statusDiv.style.backgroundColor = bgColor;
+            statusDiv.style.border = `1px solid ${color}`;
             statusDiv.innerText = msg;
         }
     </script>
