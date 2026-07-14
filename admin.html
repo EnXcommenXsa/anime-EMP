@@ -67,11 +67,20 @@
         #status { text-align: center; margin-top: 20px; font-weight: bold; padding: 15px; border-radius: 8px; display: none; }
         hr { border: 0; height: 1px; background: #333; margin: 25px 0; }
 
-        /* تصميم جدول عرض الأعضاء */
+        /* تصميم جدول الأعضاء */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0a0a0a; border-radius: 8px; overflow: hidden; }
         th, td { padding: 12px; text-align: right; border-bottom: 1px solid #222; }
         th { background: #1a1a1a; color: var(--primary-color); }
         .refresh-btn { background: #333; padding: 8px; font-size: 13px; margin-bottom: 10px; }
+        .user-row { cursor: pointer; transition: 0.2s; }
+        .user-row:hover { background: #1a1a1a; }
+
+        /* تصميم النافذة المنبثقة للسجل */
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .modal-content { background-color: #111; margin: 10% auto; padding: 20px; border: 1px solid var(--primary-color); border-radius: 10px; width: 90%; max-width: 600px; box-shadow: var(--glow); }
+        .close { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: white; }
+        .modal table { font-size: 13px; }
     </style>
 </head>
 <body>
@@ -87,11 +96,18 @@
             <button class="tab-btn" onclick="showTab('view-members'); fetchUsersList();">جميع الأعضاء</button>
         </div>
 
-        <label>🔑 الرمز السري (مطلوب دائماً):</label>
-        <input type="password" id="globalPass" placeholder="أدخل الرمز السري هنا...">
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+                <label>🔑 الرمز السري:</label>
+                <input type="password" id="globalPass" placeholder="الرمز...">
+            </div>
+            <div style="flex: 1;">
+                <label>👤 اسم المسؤول (لتسجيله):</label>
+                <input type="text" id="globalAdminName" placeholder="اكتب اسمك...">
+            </div>
+        </div>
         <hr>
 
-        <!-- قائمة الاقتراحات المخفية (تتعبأ تلقائياً) -->
         <datalist id="membersSuggestions"></datalist>
 
         <!-- 1. إضافة عضو -->
@@ -106,7 +122,6 @@
         <!-- 2. إزالة عضو -->
         <div id="delete-member" class="form-section">
             <label>ابحث عن العضو (مطلوب):</label>
-            <!-- أضفنا list="membersSuggestions" لكي تظهر الأسماء عند الكتابة -->
             <input type="text" id="delIdentifier" list="membersSuggestions" placeholder="اكتب اللقب أو ألصق الرابط...">
             <button class="submit-btn btn-dark" onclick="submitForm('delete_member')">إزالة ونقل لسجل المحذوفين ⚠️</button>
         </div>
@@ -116,7 +131,7 @@
             <label>ابحث عن العضو (مطلوب):</label>
             <input type="text" id="addCoinIdentifier" list="membersSuggestions" placeholder="اللقب أو الرابط...">
             <label>عدد العملات المضافة (مطلوب):</label>
-            <input type="number" id="addCoinAmount" placeholder="أدخل العدد (بدون أسهم)...">
+            <input type="number" id="addCoinAmount" placeholder="أدخل العدد...">
             <label>سبب الإضافة (مطلوب):</label>
             <input type="text" id="addCoinReason" placeholder="مثال: مدونة بالرئيسية، مسابقة...">
             <button class="submit-btn btn-red" onclick="submitForm('add_coins')">+ إضافة الرصيد للعضو</button>
@@ -128,16 +143,15 @@
             <input type="text" id="deductIdentifier" list="membersSuggestions" placeholder="اللقب أو الرابط...">
             <label>عدد العملات المخصومة (مطلوب):</label>
             <input type="number" id="deductAmount" placeholder="أدخل العدد...">
-            <label>نوع الخصم (مطلوب):</label>
-            <input type="text" id="deductReason" placeholder="مثال: عقوبة، أخذ إجازة، شراء متجر...">
-            <label>تفاصيل الخصم / ملاحظات (مطلوب):</label>
-            <input type="text" id="deductNotes" placeholder="اكتب التفاصيل هنا...">
+            <label>سبب / تفاصيل الخصم (مطلوب):</label>
+            <input type="text" id="deductReason" placeholder="مثال: عقوبة، شراء لقب، إجازة...">
             <button class="submit-btn btn-red" style="background: linear-gradient(45deg, #600, #900);" onclick="submitForm('deduct_coins')">- خصم الرصيد من العضو</button>
         </div>
 
         <!-- 5. عرض جميع الأعضاء -->
         <div id="view-members" class="form-section">
             <button class="submit-btn refresh-btn" onclick="fetchUsersList()">🔄 تحديث القائمة</button>
+            <p style="text-align:center; color:#888; font-size:12px;">انقر على أي عضو لفتح السجل الخاص به</p>
             <div style="max-height: 400px; overflow-y: auto; border-radius: 8px;">
                 <table>
                     <thead>
@@ -156,19 +170,41 @@
         <div id="status"></div>
     </div>
 
+    <!-- النافذة المنبثقة للسجل -->
+    <div id="ledgerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle" style="color:var(--primary-color); margin-top:0;">سجل العضو</h3>
+            <div style="max-height: 300px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>المبلغ</th>
+                            <th>السبب</th>
+                            <th>المسؤول</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi7NYfcZVfqdcJtJFv4rFdljG1CaAal_SZSDoQ7XDuyhHlIv4n1YLmUxugsUptRyg/exec";
+        let globalLedger = []; // لحفظ السجل وعرضه عند النقر
 
-        // جلب قائمة الأعضاء عند فتح اللوحة لعمل الاقتراحات والجدول
         async function fetchUsersList() {
             try {
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
-                
-                // 1. تعبئة قائمة الاقتراحات
+                const users = data.users || [];
+                globalLedger = data.ledger || [];
+
                 const dataList = document.getElementById('membersSuggestions');
                 dataList.innerHTML = '';
-                data.forEach(user => {
+                users.forEach(user => {
                     if(user.name) {
                         const option = document.createElement('option');
                         option.value = user.name;
@@ -176,19 +212,21 @@
                     }
                 });
 
-                // 2. تعبئة جدول "جميع الأعضاء"
                 const tbody = document.getElementById('membersTableBody');
                 tbody.innerHTML = '';
-                data.sort((a, b) => b.balance - a.balance); // ترتيب من الأعلى للأقل
-                data.forEach(user => {
-                    tbody.innerHTML += `<tr><td>${user.name}</td><td style="color: #ff4d4d; font-weight: bold;">${user.balance}</td></tr>`;
+                users.sort((a, b) => b.balance - a.balance);
+                users.forEach(user => {
+                    tbody.innerHTML += `
+                        <tr class="user-row" onclick="openLedger('${user.link}', '${user.name}')">
+                            <td>${user.name}</td>
+                            <td style="color: #ff4d4d; font-weight: bold; direction:ltr;">${user.balance}</td>
+                        </tr>`;
                 });
             } catch (error) {
-                console.error("خطأ في جلب بيانات الأعضاء");
+                console.error("خطأ في جلب البيانات");
             }
         }
 
-        // تشغيل الدالة فوراً عند فتح الصفحة لجلب الاقتراحات
         window.onload = fetchUsersList;
 
         function showTab(tabId) {
@@ -199,13 +237,51 @@
             document.getElementById('status').style.display = "none";
         }
 
+        function openLedger(userLink, userName) {
+            document.getElementById('modalTitle').innerText = 'سجل عمليات: ' + userName;
+            const tbody = document.getElementById('ledgerBody');
+            tbody.innerHTML = '';
+            
+            // تصفية السجل ليظهر الخاص بهذا العضو فقط
+            const userHistory = globalLedger.filter(l => l.link === userLink);
+            
+            if(userHistory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا يوجد سجل عمليات لهذا العضو.</td></tr>';
+            } else {
+                // ترتيب السجل ليكون الأحدث في الأعلى (اختياري)
+                userHistory.reverse().forEach(item => {
+                    // تلوين المبلغ (أخضر للإضافة، أحمر للخصم)
+                    let amountStr = Number(item.amount);
+                    let color = amountStr > 0 ? '#28a745' : (amountStr < 0 ? '#ff4d4d' : '#888');
+                    // استخراج التاريخ وتنسيقه
+                    let dateStr = new Date(item.date).toLocaleDateString('en-GB') || item.date;
+                    if(dateStr === "Invalid Date") dateStr = item.date;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:#aaa;">${dateStr}</td>
+                            <td style="color:${color}; font-weight:bold; direction:ltr;">${amountStr}</td>
+                            <td>${item.note}</td>
+                            <td>${item.admin}</td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('ledgerModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('ledgerModal').style.display = 'none';
+        }
+
         async function submitForm(actionType) {
             const pass = document.getElementById('globalPass').value;
-            if(!pass) { showMsg("الرجاء إدخال الرمز السري أولاً!", "#ff4d4d", "#330000"); return; }
+            const admin = document.getElementById('globalAdminName').value;
+            
+            if(!pass || !admin) { showMsg("الرجاء إدخال الرمز السري واسم المسؤول في الأعلى!", "#ff4d4d", "#330000"); return; }
 
-            let payload = { password: pass, action: actionType };
+            let payload = { password: pass, adminName: admin, action: actionType };
 
-            // التحقق من أن جميع الحقول إجبارية
             if(actionType === 'add_member') {
                 payload.identifier = document.getElementById('addLink').value;
                 payload.name = document.getElementById('addName').value;
@@ -216,18 +292,18 @@
                 if(!payload.identifier) { showMsg("يجب كتابة اسم العضو للإزالة!", "#ff4d4d", "#330000"); return; }
                 if(!confirm("هل أنت متأكد من إزالة هذا العضو؟")) return;
             }
-            else if(actionType === 'add_coins') {
-                payload.identifier = document.getElementById('addCoinIdentifier').value;
-                payload.amount = document.getElementById('addCoinAmount').value;
-                payload.reason = document.getElementById('addCoinReason').value;
+            else if(actionType === 'add_coins' || actionType === 'deduct_coins') {
+                const prefix = actionType === 'add_coins' ? 'addCoin' : 'deduct';
+                payload.identifier = document.getElementById(prefix + 'Identifier').value;
+                payload.amount = document.getElementById(prefix + 'Amount').value;
+                payload.reason = document.getElementById(prefix + 'Reason').value;
+                
                 if(!payload.identifier || !payload.amount || !payload.reason) { showMsg("جميع الحقول إجبارية!", "#ff4d4d", "#330000"); return; }
-            }
-            else if(actionType === 'deduct_coins') {
-                payload.identifier = document.getElementById('deductIdentifier').value;
-                payload.amount = document.getElementById('deductAmount').value;
-                payload.reason = document.getElementById('deductReason').value;
-                payload.notes = document.getElementById('deductNotes').value;
-                if(!payload.identifier || !payload.amount || !payload.reason || !payload.notes) { showMsg("جميع الحقول إجبارية!", "#ff4d4d", "#330000"); return; }
+                
+                // 🔥 منع إضافة أو خصم 0 عملات (تحقق من الواجهة)
+                if(Number(payload.amount) === 0) {
+                    showMsg("لا يمكن إضافة أو خصم 0 عملات!", "#ff4d4d", "#330000"); return;
+                }
             }
 
             showMsg("⏳ جاري إرسال الطلب...", "#ffd700", "#332b00");
@@ -238,8 +314,8 @@
                 
                 if(result.success) {
                     showMsg("✔️ " + result.message, "#28a745", "#0a2911");
-                    document.querySelectorAll('input[type="text"]:not(#globalPass), input[type="number"]').forEach(inpt => inpt.value = '');
-                    fetchUsersList(); // تحديث الاقتراحات بعد الإضافة أو التعديل
+                    document.querySelectorAll('.form-section.active input[type="text"], .form-section.active input[type="number"]').forEach(inpt => inpt.value = '');
+                    fetchUsersList(); 
                 } else {
                     showMsg("❌ " + result.error, "#ff4d4d", "#330000");
                 }
