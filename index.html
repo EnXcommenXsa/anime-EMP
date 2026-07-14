@@ -6,99 +6,72 @@
     <title>امبراطورية الأنمي | بنك العملات</title>
     <style>
         :root {
-            --bg-color: #0d0d0d;
-            --surface-color: #1a1a1a;
-            --primary-color: #d10000;
+            --bg-color: #050505;
+            --surface-color: #111;
+            --primary-color: #e60000;
             --text-color: #f2f2f2;
-            --border-color: #333;
+            --glow: 0 0 15px rgba(230, 0, 0, 0.6);
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            text-align: center;
+            margin: 0; padding: 20px; text-align: center;
+            background-image: radial-gradient(circle at 50% 0%, #2a0000 0%, #050505 60%);
+            background-attachment: fixed;
         }
         h1 {
-            color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(209, 0, 0, 0.5);
-            font-size: 2.5em;
-            margin-bottom: 5px;
+            color: #fff; text-shadow: var(--glow);
+            font-size: 2.8em; margin-bottom: 5px; letter-spacing: 2px;
         }
-        p.subtitle { color: #888; margin-bottom: 30px; }
+        p.subtitle { color: #aaa; margin-bottom: 30px; font-size: 1.1em; }
         .container {
-            max-width: 800px;
-            margin: auto;
-            background: var(--surface-color);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            max-width: 700px; margin: auto; background: rgba(17, 17, 17, 0.85);
+            padding: 30px; border-radius: 15px; border: 1px solid #330000;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(230,0,0,0.1);
+            backdrop-filter: blur(5px);
         }
         input[type="text"] {
-            width: 80%;
-            padding: 12px;
-            margin: 10px 0 20px 0;
-            background: #222;
-            border: 1px solid var(--primary-color);
-            color: white;
-            border-radius: 5px;
-            outline: none;
-            font-size: 16px;
+            width: 85%; padding: 15px; margin-bottom: 25px;
+            background: #0a0a0a; border: 1px solid var(--primary-color);
+            color: white; border-radius: 8px; outline: none; font-size: 16px;
+            transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
         }
-        input[type="text"]:focus { box-shadow: 0 0 8px var(--primary-color); }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-            text-align: center;
-        }
-        th { background-color: var(--primary-color); color: white; }
-        tr:hover { background-color: #2a2a2a; }
-        .link-btn {
-            color: #ff4d4d;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .link-btn:hover { text-decoration: underline; }
-        .loading { color: var(--primary-color); font-size: 1.2em; margin: 20px; display: none; }
+        input[type="text"]:focus { box-shadow: var(--glow); }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { padding: 15px; background-color: var(--primary-color); color: white; text-transform: uppercase; }
+        th:first-child { border-radius: 0 8px 8px 0; }
+        th:last-child { border-radius: 8px 0 0 8px; }
+        td { padding: 15px; background: #1a1a1a; font-size: 1.1em; }
+        td:first-child { border-radius: 0 8px 8px 0; font-weight: bold; color: #888;}
+        td:last-child { border-radius: 8px 0 0 8px; color: var(--primary-color); font-weight: bold;}
+        tr:hover td { background-color: #252525; transform: scale(1.01); transition: 0.2s; }
+        .loading { color: var(--primary-color); font-size: 1.2em; margin: 20px; display: none; text-shadow: var(--glow);}
+        .rank-1 { color: #ffd700 !important; font-size: 1.3em; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
     </style>
 </head>
 <body>
 
     <h1>امبراطورية الأنمي</h1>
-    <p class="subtitle">بنك العملات الرسمي والمكافآت</p>
+    <p class="subtitle">♛ الخزينة الإمبراطورية الرسمية ♛</p>
 
     <div class="container">
-        <h2>ابحث عن رصيدك</h2>
-        <input type="text" id="searchInput" placeholder="اكتب لقبك هنا للبحث..." onkeyup="filterTable()">
-        
-        <div id="loading" class="loading">جاري جلب بيانات الإمبراطورية...</div>
-
-        <table id="usersTable">
+        <input type="text" id="searchInput" placeholder="ابحث باسم اللقب أو رابط الحساب..." onkeyup="filterTable()">
+        <div id="loading" class="loading">جاري فتح أبواب الخزينة...</div>
+        <table>
             <thead>
                 <tr>
                     <th>المركز</th>
                     <th>اللقب</th>
-                    <th>الرصيد</th>
-                    <th>الحساب</th>
+                    <th>العملات</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                <!-- سيتم إدراج البيانات هنا عبر الجافاسكربت -->
-            </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
 
     <script>
-        // الرابط السري لجلب البيانات
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi7NYfcZVfqdcJtJFv4rFdljG1CaAal_SZSDoQ7XDuyhHlIv4n1YLmUxugsUptRyg/exec";
-        
         let usersData = [];
 
         async function loadData() {
@@ -106,13 +79,10 @@
             try {
                 const response = await fetch(SCRIPT_URL);
                 usersData = await response.json();
-                
-                // ترتيب الأعضاء حسب الرصيد (من الأعلى للأقل)
                 usersData.sort((a, b) => b.balance - a.balance);
-                
                 renderTable(usersData);
             } catch (error) {
-                alert("حدث خطأ في جلب البيانات، يرجى المحاولة لاحقاً.");
+                alert("حدث خطأ في الاتصال بالخزينة.");
             }
             document.getElementById('loading').style.display = 'none';
         }
@@ -121,12 +91,13 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             data.forEach((user, index) => {
+                const rankClass = index === 0 ? 'rank-1' : '';
+                const rankText = index === 0 ? '👑 1' : index + 1;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td><strong>${user.name}</strong></td>
-                    <td style="color: #ff4d4d; font-weight: bold;">${user.balance}</td>
-                    <td><a href="${user.link}" target="_blank" class="link-btn">زيارة</a></td>
+                    <td class="${rankClass}">${rankText}</td>
+                    <td style="color: #fff;">${user.name}</td>
+                    <td>${user.balance}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -140,8 +111,6 @@
             );
             renderTable(filteredData);
         }
-
-        // تشغيل الدالة عند فتح الصفحة
         window.onload = loadData;
     </script>
 </body>
