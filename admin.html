@@ -28,37 +28,31 @@
         }
         h2 { text-align: center; color: #fff; margin-bottom: 25px; text-shadow: var(--glow); letter-spacing: 1px; }
         
-        /* تصميم الأزرار العلوية (التبويبات) */
-        .tabs { display: flex; gap: 8px; margin-bottom: 25px; background: #0a0a0a; padding: 5px; border-radius: 10px; border: 1px solid #222; flex-wrap: wrap;}
+        .tabs { display: flex; gap: 5px; margin-bottom: 25px; background: #0a0a0a; padding: 5px; border-radius: 10px; border: 1px solid #222; flex-wrap: wrap;}
         .tab-btn { 
-            flex: 1; padding: 12px; background: transparent; color: #888; 
+            flex: 1; padding: 10px; background: transparent; color: #888; 
             border: none; border-radius: 8px; cursor: pointer; font-weight: bold; 
-            transition: 0.3s; font-size: 14px; min-width: 40%;
+            transition: 0.3s; font-size: 13px; min-width: 30%;
         }
         .tab-btn:hover { color: #fff; background: #1a1a1a; }
         .tab-btn.active { background: var(--primary-color); color: white; box-shadow: var(--glow); }
         
-        /* الحركات والنماذج */
         .form-section { display: none; animation: fadeIn 0.4s; }
         .form-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
         label { display: block; margin: 15px 0 8px; color: #bbb; font-size: 14px; font-weight: bold;}
         
-        /* تصميم الخانات */
-        input, select { 
+        input { 
             width: 100%; box-sizing: border-box; padding: 14px; 
             background: #0a0a0a; border: 1px solid #333; color: white; 
             border-radius: 8px; font-size: 15px; transition: 0.3s;
         }
-        input:focus, select:focus { border-color: var(--primary-color); outline: none; box-shadow: inset 0 0 8px rgba(230,0,0,0.3); }
+        input:focus { border-color: var(--primary-color); outline: none; box-shadow: inset 0 0 8px rgba(230,0,0,0.3); }
         
-        /* 🔥 إخفاء الأسهم من خانات الأرقام 🔥 */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* أزرار الإرسال */
         .submit-btn { 
             width: 100%; padding: 15px; margin-top: 25px; color: white; 
             border: none; border-radius: 8px; font-weight: bold; font-size: 16px; 
@@ -66,12 +60,18 @@
         }
         .submit-btn:hover { transform: translateY(-2px); }
         .submit-btn:active { transform: translateY(0); opacity: 0.9; }
-        .btn-green { background: linear-gradient(45deg, #1e7e34, #28a745); box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); }
+        .btn-green { background: linear-gradient(45deg, #1e7e34, #28a745); }
         .btn-red { background: linear-gradient(45deg, #8b0000, #d10000); box-shadow: 0 4px 15px rgba(209, 0, 0, 0.4); }
         .btn-dark { background: linear-gradient(45deg, #222, #444); border: 1px solid #555; }
         
         #status { text-align: center; margin-top: 20px; font-weight: bold; padding: 15px; border-radius: 8px; display: none; }
         hr { border: 0; height: 1px; background: #333; margin: 25px 0; }
+
+        /* تصميم جدول عرض الأعضاء */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0a0a0a; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #222; }
+        th { background: #1a1a1a; color: var(--primary-color); }
+        .refresh-btn { background: #333; padding: 8px; font-size: 13px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -84,54 +84,73 @@
             <button class="tab-btn" onclick="showTab('delete-member')">إزالة عضو</button>
             <button class="tab-btn" onclick="showTab('add-coins')">إضافة عملات</button>
             <button class="tab-btn" onclick="showTab('deduct-coins')">خصم عملات</button>
+            <button class="tab-btn" onclick="showTab('view-members'); fetchUsersList();">جميع الأعضاء</button>
         </div>
 
-        <label>🔑 الرمز السري (مطلوب):</label>
+        <label>🔑 الرمز السري (مطلوب دائماً):</label>
         <input type="password" id="globalPass" placeholder="أدخل الرمز السري هنا...">
         <hr>
 
+        <!-- قائمة الاقتراحات المخفية (تتعبأ تلقائياً) -->
+        <datalist id="membersSuggestions"></datalist>
+
         <!-- 1. إضافة عضو -->
         <div id="add-member" class="form-section active">
-            <label>رابط الحساب:</label>
+            <label>رابط الحساب (مطلوب):</label>
             <input type="text" id="addLink" placeholder="ألصق رابط العضو...">
-            <label>لقب العضو:</label>
+            <label>لقب العضو (مطلوب):</label>
             <input type="text" id="addName" placeholder="اكتب اللقب...">
             <button class="submit-btn btn-green" onclick="submitForm('add_member')">حفظ العضو الجديد</button>
         </div>
 
         <!-- 2. إزالة عضو -->
         <div id="delete-member" class="form-section">
-            <label>ابحث عن العضو:</label>
-            <input type="text" id="delIdentifier" placeholder="اكتب اللقب أو ألصق الرابط...">
+            <label>ابحث عن العضو (مطلوب):</label>
+            <!-- أضفنا list="membersSuggestions" لكي تظهر الأسماء عند الكتابة -->
+            <input type="text" id="delIdentifier" list="membersSuggestions" placeholder="اكتب اللقب أو ألصق الرابط...">
             <button class="submit-btn btn-dark" onclick="submitForm('delete_member')">إزالة ونقل لسجل المحذوفين ⚠️</button>
         </div>
 
         <!-- 3. إضافة عملات -->
         <div id="add-coins" class="form-section">
-            <label>ابحث عن العضو:</label>
-            <input type="text" id="addCoinIdentifier" placeholder="اللقب أو الرابط...">
-            <label>عدد العملات المضافة:</label>
-            <input type="number" id="addCoinAmount" placeholder="أدخل عدد العملات)...">
-            <label>سبب الإضافة:</label>
+            <label>ابحث عن العضو (مطلوب):</label>
+            <input type="text" id="addCoinIdentifier" list="membersSuggestions" placeholder="اللقب أو الرابط...">
+            <label>عدد العملات المضافة (مطلوب):</label>
+            <input type="number" id="addCoinAmount" placeholder="أدخل العدد (بدون أسهم)...">
+            <label>سبب الإضافة (مطلوب):</label>
             <input type="text" id="addCoinReason" placeholder="مثال: مدونة بالرئيسية، مسابقة...">
             <button class="submit-btn btn-red" onclick="submitForm('add_coins')">+ إضافة الرصيد للعضو</button>
         </div>
 
         <!-- 4. خصم عملات -->
         <div id="deduct-coins" class="form-section">
-            <label>ابحث عن العضو:</label>
-            <input type="text" id="deductIdentifier" placeholder="اللقب أو الرابط...">
-            <label>عدد العملات المخصومة:</label>
+            <label>ابحث عن العضو (مطلوب):</label>
+            <input type="text" id="deductIdentifier" list="membersSuggestions" placeholder="اللقب أو الرابط...">
+            <label>عدد العملات المخصومة (مطلوب):</label>
             <input type="number" id="deductAmount" placeholder="أدخل العدد...">
-            <label>نوع الخصم:</label>
-            <select id="deductReason">
-                <option value="شراء من المتجر">شراء من المتجر</option>
-                <option value="عقوبة/مخالفة">عقوبة/مخالفة</option>
-                <option value="أخذ إجازة">أخذ إجازة</option>
-            </select>
-            <label>تفاصيل الخصم (ملاحظات):</label>
-            <input type="text" id="deductNotes" placeholder="ماذا اشترى؟ أو ما سبب المخالفة؟">
+            <label>نوع الخصم (مطلوب):</label>
+            <input type="text" id="deductReason" placeholder="مثال: عقوبة، أخذ إجازة، شراء متجر...">
+            <label>تفاصيل الخصم / ملاحظات (مطلوب):</label>
+            <input type="text" id="deductNotes" placeholder="اكتب التفاصيل هنا...">
             <button class="submit-btn btn-red" style="background: linear-gradient(45deg, #600, #900);" onclick="submitForm('deduct_coins')">- خصم الرصيد من العضو</button>
+        </div>
+
+        <!-- 5. عرض جميع الأعضاء -->
+        <div id="view-members" class="form-section">
+            <button class="submit-btn refresh-btn" onclick="fetchUsersList()">🔄 تحديث القائمة</button>
+            <div style="max-height: 400px; overflow-y: auto; border-radius: 8px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اللقب</th>
+                            <th>الرصيد</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTableBody">
+                        <tr><td colspan="2" style="text-align: center;">جاري جلب بيانات الأعضاء...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="status"></div>
@@ -139,6 +158,38 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi7NYfcZVfqdcJtJFv4rFdljG1CaAal_SZSDoQ7XDuyhHlIv4n1YLmUxugsUptRyg/exec";
+
+        // جلب قائمة الأعضاء عند فتح اللوحة لعمل الاقتراحات والجدول
+        async function fetchUsersList() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                
+                // 1. تعبئة قائمة الاقتراحات
+                const dataList = document.getElementById('membersSuggestions');
+                dataList.innerHTML = '';
+                data.forEach(user => {
+                    if(user.name) {
+                        const option = document.createElement('option');
+                        option.value = user.name;
+                        dataList.appendChild(option);
+                    }
+                });
+
+                // 2. تعبئة جدول "جميع الأعضاء"
+                const tbody = document.getElementById('membersTableBody');
+                tbody.innerHTML = '';
+                data.sort((a, b) => b.balance - a.balance); // ترتيب من الأعلى للأقل
+                data.forEach(user => {
+                    tbody.innerHTML += `<tr><td>${user.name}</td><td style="color: #ff4d4d; font-weight: bold;">${user.balance}</td></tr>`;
+                });
+            } catch (error) {
+                console.error("خطأ في جلب بيانات الأعضاء");
+            }
+        }
+
+        // تشغيل الدالة فوراً عند فتح الصفحة لجلب الاقتراحات
+        window.onload = fetchUsersList;
 
         function showTab(tabId) {
             document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
@@ -150,34 +201,33 @@
 
         async function submitForm(actionType) {
             const pass = document.getElementById('globalPass').value;
-            const statusDiv = document.getElementById('status');
-            
             if(!pass) { showMsg("الرجاء إدخال الرمز السري أولاً!", "#ff4d4d", "#330000"); return; }
 
             let payload = { password: pass, action: actionType };
 
+            // التحقق من أن جميع الحقول إجبارية
             if(actionType === 'add_member') {
                 payload.identifier = document.getElementById('addLink').value;
                 payload.name = document.getElementById('addName').value;
-                if(!payload.identifier || !payload.name) { showMsg("أكمل بيانات العضو!", "#ff4d4d", "#330000"); return; }
+                if(!payload.identifier || !payload.name) { showMsg("جميع الحقول إجبارية!", "#ff4d4d", "#330000"); return; }
             }
             else if(actionType === 'delete_member') {
                 payload.identifier = document.getElementById('delIdentifier').value;
-                if(!payload.identifier) { showMsg("اكتب اسم أو رابط العضو للإزالة!", "#ff4d4d", "#330000"); return; }
+                if(!payload.identifier) { showMsg("يجب كتابة اسم العضو للإزالة!", "#ff4d4d", "#330000"); return; }
                 if(!confirm("هل أنت متأكد من إزالة هذا العضو؟")) return;
             }
             else if(actionType === 'add_coins') {
                 payload.identifier = document.getElementById('addCoinIdentifier').value;
                 payload.amount = document.getElementById('addCoinAmount').value;
                 payload.reason = document.getElementById('addCoinReason').value;
-                if(!payload.identifier || !payload.amount) { showMsg("البيانات ناقصة!", "#ff4d4d", "#330000"); return; }
+                if(!payload.identifier || !payload.amount || !payload.reason) { showMsg("جميع الحقول إجبارية!", "#ff4d4d", "#330000"); return; }
             }
             else if(actionType === 'deduct_coins') {
                 payload.identifier = document.getElementById('deductIdentifier').value;
                 payload.amount = document.getElementById('deductAmount').value;
                 payload.reason = document.getElementById('deductReason').value;
                 payload.notes = document.getElementById('deductNotes').value;
-                if(!payload.identifier || !payload.amount) { showMsg("البيانات ناقصة!", "#ff4d4d", "#330000"); return; }
+                if(!payload.identifier || !payload.amount || !payload.reason || !payload.notes) { showMsg("جميع الحقول إجبارية!", "#ff4d4d", "#330000"); return; }
             }
 
             showMsg("⏳ جاري إرسال الطلب...", "#ffd700", "#332b00");
@@ -189,6 +239,7 @@
                 if(result.success) {
                     showMsg("✔️ " + result.message, "#28a745", "#0a2911");
                     document.querySelectorAll('input[type="text"]:not(#globalPass), input[type="number"]').forEach(inpt => inpt.value = '');
+                    fetchUsersList(); // تحديث الاقتراحات بعد الإضافة أو التعديل
                 } else {
                     showMsg("❌ " + result.error, "#ff4d4d", "#330000");
                 }
