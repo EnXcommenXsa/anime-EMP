@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>إدارة الإمبراطورية | سري</title>
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --surface-color: #1a1a1a;
+            --primary-color: #d10000;
+            --text-color: #f2f2f2;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+        }
+        .header { text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px;}
+        .header h2 { color: var(--primary-color); margin: 0; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #aaa;}
+        input, select {
+            width: 100%; box-sizing: border-box; padding: 12px;
+            background: #222; border: 1px solid #444; color: white;
+            border-radius: 6px; outline: none; font-size: 16px;
+        }
+        input:focus { border-color: var(--primary-color); }
+        .btn {
+            width: 100%; padding: 14px; font-size: 16px; font-weight: bold;
+            color: white; border: none; border-radius: 6px; cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .btn-add { background-color: #28a745; }
+        .btn-deduct { background-color: var(--primary-color); }
+        .btn-delete { background-color: #444; border: 1px solid #666;}
+        .btn:active { opacity: 0.8; }
+        .status { text-align: center; margin-top: 15px; font-weight: bold; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>لوحة تحكم اللجنة</h2>
+        <p style="font-size: 12px; color: #888;">امبراطورية الأنمي - الإدارة</p>
+    </div>
+
+    <div class="form-group">
+        <label>كلمة المرور الخاصة بك (مطلوبة):</label>
+        <input type="password" id="adminPass" placeholder="أدخل الرمز السري...">
+    </div>
+
+    <div class="form-group">
+        <label>رابط حساب العضو (مطلوب):</label>
+        <input type="text" id="userLink" placeholder="مثال: https://link/user">
+    </div>
+
+    <div class="form-group">
+        <label>لقب العضو (مطلوب للأعضاء الجدد فقط):</label>
+        <input type="text" id="userName" placeholder="اللقب في المنتدى">
+    </div>
+
+    <div class="form-group" style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+            <label>المبلغ:</label>
+            <input type="number" id="amount" placeholder="مثال: 50">
+        </div>
+        <div style="flex: 2;">
+            <label>السبب/الملاحظة:</label>
+            <input type="text" id="note" placeholder="مثال: مدونة، مسابقة...">
+        </div>
+    </div>
+
+    <div class="form-group" id="statusMessage" class="status"></div>
+
+    <button class="btn btn-add" onclick="sendData('transaction', 'add')">+ إضافة عملات</button>
+    <button class="btn btn-deduct" onclick="sendData('transaction', 'deduct')">- خصم عملات (للمتجر)</button>
+    
+    <hr style="border-color: #333; margin: 30px 0;">
+    
+    <button class="btn btn-delete" onclick="sendData('delete', 'none')">⚠️ حذف العضو بالكامل</button>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi7NYfcZVfqdcJtJFv4rFdljG1CaAal_SZSDoQ7XDuyhHlIv4n1YLmUxugsUptRyg/exec";
+
+        async function sendData(actionType, mathType) {
+            const pass = document.getElementById('adminPass').value;
+            const link = document.getElementById('userLink').value;
+            const name = document.getElementById('userName').value;
+            let amount = document.getElementById('amount').value;
+            const note = document.getElementById('note').value;
+            const statusDiv = document.getElementById('statusMessage');
+
+            if(!pass || !link) {
+                showMessage("كلمة المرور ورابط الحساب حقول إجبارية!", "red");
+                return;
+            }
+
+            if(actionType === 'transaction') {
+                if(!amount) { showMessage("الرجاء إدخال المبلغ!", "red"); return; }
+                amount = Math.abs(Number(amount)); 
+                if(mathType === 'deduct') amount = -amount; // تحويله لسالب إذا كان خصم
+            }
+
+            if(actionType === 'delete') {
+                if(!confirm("هل أنت متأكد من حذف هذا العضو بالكامل؟")) return;
+            }
+
+            const payload = {
+                password: pass,
+                action: actionType,
+                link: link,
+                name: name,
+                amount: amount,
+                note: note
+            };
+
+            showMessage("جاري إرسال الأمر للإمبراطورية...", "yellow");
+
+            try {
+                // نستخدم POST مع stringify بدون headers لتجنب مشاكل CORS
+                const response = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if(result.success) {
+                    showMessage(result.message, "#28a745");
+                    document.getElementById('amount').value = '';
+                    document.getElementById('note').value = '';
+                } else {
+                    showMessage(result.error, "red");
+                }
+            } catch (error) {
+                showMessage("حدث خطأ في الاتصال، تأكد من الإنترنت.", "red");
+            }
+        }
+
+        function showMessage(msg, color) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.style.display = 'block';
+            statusDiv.style.color = color;
+            statusDiv.innerText = msg;
+        }
+    </script>
+</body>
+</html>
