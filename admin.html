@@ -2,310 +2,369 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <meta name="viewport" content="width=device-width, initial-width=1.0, maximum-scale=1.0, user-scalable=no">
     <title>إدارة الإمبراطورية | سري</title>
     <style>
-        :root { --bg-color: #050505; --surface-color: #111; --primary-color: #e60000; --text-color: #f2f2f2; --glow: 0 0 10px rgba(230, 0, 0, 0.5); }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; background-image: radial-gradient(circle at 50% 0%, #2a0000 0%, #050505 60%); background-attachment: fixed; }
-        .container { max-width: 600px; margin: auto; background: rgba(17, 17, 17, 0.9); padding: 25px; border-radius: 15px; border: 1px solid #330000; box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(230,0,0,0.1); backdrop-filter: blur(5px); }
-        h2 { text-align: center; color: #fff; margin-bottom: 25px; text-shadow: var(--glow); letter-spacing: 1px; }
-        .tabs { display: flex; gap: 5px; margin-bottom: 25px; background: #0a0a0a; padding: 5px; border-radius: 10px; border: 1px solid #222; flex-wrap: wrap;}
-        .tab-btn { flex: 1; padding: 10px; background: transparent; color: #888; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 13px; min-width: 30%; }
-        .tab-btn:hover { color: #fff; background: #1a1a1a; }
-        .tab-btn.active { background: var(--primary-color); color: white; box-shadow: var(--glow); }
-        .form-section { display: none; animation: fadeIn 0.4s; }
+        :root { 
+            --bg-dark: #19171b; 
+            --surface: #252628; 
+            --primary: #5d0018; 
+            --gold: #d29f22; 
+            --text: #f2f2f2; 
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: var(--text); margin: 0; padding: 0; padding-bottom: 80px; }
+        
+        .header { background: var(--primary); padding: 20px; text-align: center; border-bottom: 2px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 10; }
+        .header h2 { margin: 0; color: var(--gold); font-size: 22px; letter-spacing: 1px; }
+
+        .container { padding: 20px; max-width: 600px; margin: auto; }
+        .form-section { display: none; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: fadeIn 0.3s ease; }
         .form-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        label { display: block; margin: 15px 0 8px; color: #bbb; font-size: 14px; font-weight: bold;}
-        input { width: 100%; box-sizing: border-box; padding: 14px; background: #0a0a0a; border: 1px solid #333; color: white; border-radius: 8px; font-size: 15px; transition: 0.3s; }
-        input:focus { border-color: var(--primary-color); outline: none; box-shadow: inset 0 0 8px rgba(230,0,0,0.3); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        label { display: block; margin: 15px 0 8px; color: var(--gold); font-size: 14px; font-weight: bold; }
+        input { width: 100%; box-sizing: border-box; padding: 14px; background: var(--bg-dark); border: 1px solid #444; color: white; border-radius: 8px; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--gold); box-shadow: 0 0 8px rgba(210, 159, 34, 0.3); }
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
-        .submit-btn { width: 100%; padding: 15px; margin-top: 25px; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .submit-btn:hover { transform: translateY(-2px); }
-        .submit-btn:active { transform: translateY(0); opacity: 0.9; }
-        .btn-green { background: linear-gradient(45deg, #1e7e34, #28a745); }
-        .btn-red { background: linear-gradient(45deg, #8b0000, #d10000); box-shadow: 0 4px 15px rgba(209, 0, 0, 0.4); }
-        .btn-dark { background: linear-gradient(45deg, #222, #444); border: 1px solid #555; }
-        #status { text-align: center; margin-top: 20px; font-weight: bold; padding: 15px; border-radius: 8px; display: none; }
-        hr { border: 0; height: 1px; background: #333; margin: 25px 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0a0a0a; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #222; }
-        th { background: #1a1a1a; color: var(--primary-color); }
-        .refresh-btn { background: #333; padding: 8px; font-size: 13px; margin-bottom: 10px; }
+        
+        /* البحث الحي */
+        .search-container { position: relative; }
+        .search-results { position: absolute; width: 100%; background: var(--bg-dark); border: 1px solid var(--gold); border-top: none; border-radius: 0 0 8px 8px; max-height: 150px; overflow-y: auto; z-index: 20; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+        .search-item { padding: 12px; border-bottom: 1px solid #333; cursor: pointer; color: white; font-size: 14px; transition: 0.2s; }
+        .search-item:hover { background: var(--primary); color: var(--gold); }
+
+        .submit-btn { width: 100%; padding: 15px; margin-top: 25px; background: var(--primary); color: var(--gold); border: 1px solid var(--gold); border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .submit-btn:active { transform: scale(0.98); background: #3a000f; }
+        .btn-green { background: #1e7e34; border-color: #28a745; color: white; }
+
+        /* شريط التنقل السفلي */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--surface); display: flex; border-top: 2px solid var(--gold); z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { flex: 1; padding: 12px 2px; text-align: center; color: #888; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: var(--gold); background: rgba(93, 0, 24, 0.3); }
+        .nav-icon { font-size: 18px; }
+
+        /* النوافذ المنبثقة (Modals) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-box { background: var(--surface); width: 85%; max-width: 400px; padding: 25px; border-radius: 15px; border: 2px solid var(--gold); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.9); animation: popIn 0.3s; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-box h3 { margin-top: 0; color: var(--gold); }
+        .modal-box p { color: #ccc; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
+        .modal-btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px; }
+        .btn-confirm { background: var(--primary); color: var(--gold); border: 1px solid var(--gold); }
+        .btn-cancel { background: #333; color: white; }
+
+        /* جدول الأعضاء والسجل */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: var(--bg-dark); border-radius: 8px; overflow: hidden; border: 1px solid #444; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #333; }
+        th { background: var(--primary); color: var(--gold); }
         .user-row { cursor: pointer; transition: 0.2s; }
         .user-row:hover { background: #1a1a1a; }
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
-        .modal-content { background-color: #111; margin: 10% auto; padding: 20px; border: 1px solid var(--primary-color); border-radius: 10px; width: 90%; max-width: 600px; box-shadow: var(--glow); }
-        .close { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close:hover { color: white; }
-        .modal table { font-size: 13px; }
+        .ledger-modal .modal-box { max-width: 500px; width: 95%; padding: 15px; text-align: right; }
+        .ledger-table { font-size: 12px; }
     </style>
 </head>
 <body>
 
+    <div class="header">
+        <h2>♛ الخزينة الإمبراطورية ♛</h2>
+    </div>
+
     <div class="container">
-        <h2>♛ مركز إدارة الإمبراطورية ♛</h2>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('add-member')">إضافة عضو</button>
-            <button class="tab-btn" onclick="showTab('delete-member')">إزالة عضو</button>
-            <button class="tab-btn" onclick="showTab('add-coins')">إضافة عملات</button>
-            <button class="tab-btn" onclick="showTab('deduct-coins')">خصم عملات</button>
-            <!-- تم إزالة الجلب التلقائي من هنا لتسريع اللوحة -->
-            <button class="tab-btn" onclick="showTab('view-members')">جميع الأعضاء</button>
-        </div>
-
-        <div style="display: flex; gap: 10px;">
+        <!-- بيانات المسؤول -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <div style="flex: 1;">
                 <label>🔑 الرمز السري:</label>
-                <input type="password" id="globalPass" placeholder="الرمز...">
+                <input type="password" id="adminPass" placeholder="الرمز...">
             </div>
             <div style="flex: 1;">
-                <label>👤 اسم المسؤول:</label>
-                <input type="text" id="globalAdminName" placeholder="اكتب اسمك...">
+                <label>👤 اسمك (للسجل):</label>
+                <input type="text" id="adminName" placeholder="اكتب اسمك...">
             </div>
         </div>
-        <hr>
-
-        <datalist id="membersSuggestions"></datalist>
 
         <!-- 1. إضافة عضو -->
-        <div id="add-member" class="form-section active">
-            <label>رابط الحساب (مطلوب):</label>
-            <input type="text" id="addLink" placeholder="ألصق رابط العضو...">
-            <label>لقب العضو (مطلوب):</label>
-            <input type="text" id="addName" placeholder="اكتب اللقب...">
-            <button class="submit-btn btn-green" onclick="submitForm('add_member')">حفظ العضو الجديد</button>
+        <div id="tab-add" class="form-section active">
+            <h3 style="color:var(--gold); text-align:center; margin-top:0;">إضافة عضو جديد</h3>
+            <label>رابط الحساب:</label>
+            <input type="text" id="newLink" placeholder="ألصق رابط العضو..." autocomplete="off">
+            <label>لقب العضو:</label>
+            <input type="text" id="newName" placeholder="اكتب اللقب..." autocomplete="off">
+            <button class="submit-btn btn-green" onclick="addUser()">+ حفظ العضو</button>
         </div>
 
-        <!-- 2. إزالة عضو -->
-        <div id="delete-member" class="form-section">
-            <label>ابحث عن العضو (مطلوب):</label>
-            <input type="text" id="delIdentifier" list="membersSuggestions" placeholder="اكتب اللقب أو ألصق الرابط...">
-            <button class="submit-btn btn-dark" onclick="submitForm('delete_member')">إزالة ونقل لسجل المحذوفين ⚠️</button>
+        <!-- 2. إضافة عملات -->
+        <div id="tab-add-coins" class="form-section">
+            <h3 style="color:var(--gold); text-align:center; margin-top:0;">إضافة عملات</h3>
+            <div class="search-container">
+                <label>ابحث عن العضو:</label>
+                <input type="text" id="addSearch" placeholder="اكتب اللقب..." autocomplete="off" oninput="handleSearch(this.value, 'addResults', 'add')">
+                <div id="addResults" class="search-results"></div>
+            </div>
+            <input type="hidden" id="addUserId">
+            <label>العدد المضاف:</label>
+            <input type="number" id="addAmount" placeholder="مثال: 50">
+            <label>سبب الإضافة:</label>
+            <input type="text" id="addReason" placeholder="مثال: مدونة، مسابقة...">
+            <button class="submit-btn btn-green" onclick="processCoins('add')">+ إضافة الرصيد</button>
         </div>
 
-        <!-- 3. إضافة عملات -->
-        <div id="add-coins" class="form-section">
-            <label>ابحث عن العضو (مطلوب):</label>
-            <input type="text" id="addCoinIdentifier" list="membersSuggestions" placeholder="اللقب أو الرابط...">
-            <label>عدد العملات المضافة (مطلوب):</label>
-            <input type="number" id="addCoinAmount" placeholder="أدخل العدد...">
-            <label>سبب الإضافة (مطلوب):</label>
-            <input type="text" id="addCoinReason" placeholder="مثال: مدونة بالرئيسية، مسابقة...">
-            <button class="submit-btn btn-red" onclick="submitForm('add_coins')">+ إضافة الرصيد للعضو</button>
+        <!-- 3. خصم عملات -->
+        <div id="tab-deduct-coins" class="form-section">
+            <h3 style="color:var(--primary); text-align:center; margin-top:0;">خصم عملات</h3>
+            <div class="search-container">
+                <label>ابحث عن العضو:</label>
+                <input type="text" id="deductSearch" placeholder="اكتب اللقب..." autocomplete="off" oninput="handleSearch(this.value, 'deductResults', 'deduct')">
+                <div id="deductResults" class="search-results"></div>
+            </div>
+            <input type="hidden" id="deductUserId">
+            <label>العدد المخصوم:</label>
+            <input type="number" id="deductAmount" placeholder="مثال: 50">
+            <label>نوع الخصم وتفاصيله:</label>
+            <input type="text" id="deductReason" placeholder="مثال: عقوبة، إجازة، متجر...">
+            <button class="submit-btn" onclick="processCoins('deduct')">- خصم الرصيد</button>
         </div>
 
-        <!-- 4. خصم عملات -->
-        <div id="deduct-coins" class="form-section">
-            <label>ابحث عن العضو (مطلوب):</label>
-            <input type="text" id="deductIdentifier" list="membersSuggestions" placeholder="اللقب أو الرابط...">
-            <label>عدد العملات المخصومة (مطلوب):</label>
-            <input type="number" id="deductAmount" placeholder="أدخل العدد...">
-            <label>سبب / تفاصيل الخصم (مطلوب):</label>
-            <input type="text" id="deductReason" placeholder="مثال: عقوبة، شراء لقب، إجازة...">
-            <button class="submit-btn btn-red" style="background: linear-gradient(45deg, #600, #900);" onclick="submitForm('deduct_coins')">- خصم الرصيد من العضو</button>
+        <!-- 4. إزالة عضو -->
+        <div id="tab-del" class="form-section">
+            <h3 style="color:var(--primary); text-align:center; margin-top:0;">⚠️ إزالة عضو</h3>
+            <div class="search-container">
+                <label>ابحث عن العضو للحذف:</label>
+                <input type="text" id="delSearch" placeholder="اكتب اللقب..." autocomplete="off" oninput="handleSearch(this.value, 'delResults', 'del')">
+                <div id="delResults" class="search-results"></div>
+            </div>
+            <input type="hidden" id="delUserId">
+            <button class="submit-btn" style="background:#333; color:white; border-color:#555;" onclick="confirmDelete()">إزالة ونقل لسجل المحذوفين</button>
         </div>
 
-        <!-- 5. عرض جميع الأعضاء -->
-        <div id="view-members" class="form-section">
-            <!-- الزر الآن يرسل 'true' ليجبر التحديث -->
-            <button class="submit-btn refresh-btn" onclick="fetchUsersList(true)">🔄 تحديث القائمة</button>
+        <!-- 5. قائمة الأعضاء -->
+        <div id="tab-list" class="form-section">
+            <h3 style="color:var(--gold); text-align:center; margin-top:0;">جميع الأعضاء</h3>
             <p style="text-align:center; color:#888; font-size:12px;">انقر على أي عضو لفتح السجل الخاص به</p>
-            <div style="max-height: 400px; overflow-y: auto; border-radius: 8px;">
+            <div style="max-height: 400px; overflow-y: auto;">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>اللقب</th>
-                            <th>الرصيد</th>
-                        </tr>
-                    </thead>
-                    <tbody id="membersTableBody">
-                        <tr><td colspan="2" style="text-align: center;">جاري جلب بيانات الأعضاء... ⏳</td></tr>
-                    </tbody>
+                    <thead><tr><th>اللقب</th><th>الرصيد</th></tr></thead>
+                    <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
         </div>
-
-        <div id="status"></div>
     </div>
 
-    <!-- النافذة المنبثقة للسجل -->
-    <div id="ledgerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3 id="modalTitle" style="color:var(--primary-color); margin-top:0;">سجل العضو</h3>
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('tab-add', this)"><span class="nav-icon">➕</span>عضو</div>
+        <div class="nav-item" onclick="switchTab('tab-add-coins', this)"><span class="nav-icon">📈</span>إضافة</div>
+        <div class="nav-item" onclick="switchTab('tab-deduct-coins', this)"><span class="nav-icon">📉</span>خصم</div>
+        <div class="nav-item" onclick="switchTab('tab-del', this)"><span class="nav-icon">🗑️</span>حذف</div>
+        <div class="nav-item" onclick="switchTab('tab-list', this); loadUsersTable();"><span class="nav-icon">📋</span>الكل</div>
+    </div>
+
+    <!-- النوافذ المنبثقة -->
+    <div id="msgModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="msgTitle">رسالة</h3>
+            <p id="msgText">نص الرسالة</p>
+            <button class="modal-btn btn-confirm" onclick="document.getElementById('msgModal').style.display='none'">حسناً</button>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>⚠️ تأكيد الحذف</h3>
+            <p id="confirmText">هل أنت متأكد؟</p>
+            <button class="modal-btn btn-cancel" onclick="document.getElementById('confirmModal').style.display='none'">إلغاء</button>
+            <button class="modal-btn btn-confirm" onclick="executeDelete()">نعم، احذف العضو</button>
+        </div>
+    </div>
+
+    <!-- نافذة السجل -->
+    <div id="ledgerModal" class="modal-overlay ledger-modal">
+        <div class="modal-box">
+            <h3 id="ledgerTitle" style="color:var(--gold); text-align:center; margin-top:0;">سجل العضو</h3>
             <div style="max-height: 300px; overflow-y: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>التاريخ</th>
-                            <th>المبلغ</th>
-                            <th>السبب</th>
-                            <th>المسؤول</th>
-                        </tr>
-                    </thead>
+                <table class="ledger-table">
+                    <thead><tr><th>التاريخ</th><th>المبلغ</th><th>السبب</th><th>المسؤول</th></tr></thead>
                     <tbody id="ledgerBody"></tbody>
                 </table>
             </div>
+            <button class="submit-btn btn-cancel" style="margin-top:15px; padding:10px;" onclick="document.getElementById('ledgerModal').style.display='none'">إغلاق السجل</button>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi7NYfcZVfqdcJtJFv4rFdljG1CaAal_SZSDoQ7XDuyhHlIv4n1YLmUxugsUptRyg/exec";
-        let globalLedger = []; 
-        let isDataLoaded = false; // متغير لمنع التحميل المتكرر
+        // رابط Firebase الخاص بك
+        const FB_URL = "https://anime-empire-55fc0-default-rtdb.firebaseio.com";
+        let globalUsers = {}; 
 
-        async function fetchUsersList(forceUpdate = false) {
-            if (isDataLoaded && !forceUpdate) return; // إذا كانت البيانات موجودة، لا تحملها مجدداً
+        function showMsg(title, text, color = "var(--gold)") {
+            document.getElementById('msgTitle').innerText = title;
+            document.getElementById('msgTitle').style.color = color;
+            document.getElementById('msgText').innerText = text;
+            document.getElementById('msgModal').style.display = 'flex';
+        }
 
-            const tbody = document.getElementById('membersTableBody');
-            tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: yellow;">جاري جلب بيانات الأعضاء... ⏳</td></tr>';
+        async function fetchUsers() {
+            try {
+                const res = await fetch(`${FB_URL}/users.json`);
+                globalUsers = await res.json() || {};
+            } catch (e) { showMsg("خطأ", "فشل الاتصال بقاعدة البيانات", "var(--primary)"); }
+        }
+        
+        window.onload = fetchUsers;
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
+            fetchUsers(); 
+        }
+
+        function handleSearch(query, resultBoxId, type) {
+            const box = document.getElementById(resultBoxId);
+            box.innerHTML = '';
+            if(query.length < 2) { box.style.display = 'none'; return; }
+            
+            let matches = Object.entries(globalUsers).filter(([id, user]) => 
+                user.name.toLowerCase().includes(query.toLowerCase()) || 
+                user.link.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if(matches.length === 0) { box.style.display = 'none'; return; }
+
+            matches.forEach(([id, user]) => {
+                let div = document.createElement('div');
+                div.className = 'search-item';
+                div.innerText = `${user.name} (${user.balance} عملة)`;
+                div.onclick = () => {
+                    document.getElementById(type + 'Search').value = user.name;
+                    document.getElementById(type + 'UserId').value = id;
+                    box.style.display = 'none';
+                };
+                box.appendChild(div);
+            });
+            box.style.display = 'block';
+        }
+
+        function checkAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            const name = document.getElementById('adminName').value;
+            if(pass !== "123" || !name) { showMsg("تنبيه", "يجب كتابة الرمز السري (123) واسمك!", "var(--primary)"); return null; }
+            return name;
+        }
+
+        async function addUser() {
+            const admin = checkAdmin(); if(!admin) return;
+            const link = document.getElementById('newLink').value.trim();
+            const name = document.getElementById('newName').value.trim();
+            if(!link || !name) return showMsg("تنبيه", "أكمل جميع الحقول!");
+
+            let exists = Object.values(globalUsers).find(u => u.link === link || u.name === name);
+            if(exists) return showMsg("مرفوض", "هذا العضو أو الرابط مسجل مسبقاً!", "var(--primary)");
 
             try {
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
+                await fetch(`${FB_URL}/users.json`, { method: 'POST', body: JSON.stringify({ link: link, name: name, balance: 0 }) });
                 
-                // حماية ضد الأخطاء إذا لم يتم تحديث السكربت كإصدار جديد
-                let users = [];
-                if (data.users) {
-                    users = data.users;
-                    globalLedger = data.ledger || [];
-                } else if (Array.isArray(data)) {
-                    users = data; // لو كانت البيانات القديمة
-                    globalLedger = [];
-                }
+                let dateStr = new Date().toLocaleDateString('en-GB');
+                await fetch(`${FB_URL}/ledger.json`, { method: 'POST', body: JSON.stringify({ date: dateStr, name: name, amount: 0, note: "تسجيل عضو جديد", admin: admin }) });
 
-                // تعبئة الاقتراحات
-                const dataList = document.getElementById('membersSuggestions');
-                dataList.innerHTML = '';
-                users.forEach(user => {
-                    if(user.name) {
-                        const option = document.createElement('option');
-                        option.value = user.name;
-                        dataList.appendChild(option);
-                    }
-                });
-
-                // تعبئة الجدول
-                tbody.innerHTML = '';
-                if(users.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="2" style="text-align: center;">لا يوجد أعضاء في الخزينة بعد.</td></tr>';
-                } else {
-                    users.sort((a, b) => b.balance - a.balance);
-                    users.forEach(user => {
-                        tbody.innerHTML += `
-                            <tr class="user-row" onclick="openLedger('${user.link}', '${user.name}')">
-                                <td>${user.name}</td>
-                                <td style="color: #ff4d4d; font-weight: bold; direction:ltr;">${user.balance}</td>
-                            </tr>`;
-                    });
-                }
-                isDataLoaded = true; // تم التحميل بنجاح
-            } catch (error) {
-                console.error("Fetch Error:", error);
-                tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #ff4d4d;">❌ فشل جلب البيانات. الرجاء الضغط على زر التحديث.</td></tr>';
-            }
+                showMsg("نجاح", `تمت إضافة العضو ${name} بنجاح!`);
+                document.getElementById('newLink').value = ''; document.getElementById('newName').value = '';
+                fetchUsers();
+            } catch(e) { showMsg("خطأ", "فشل الحفظ"); }
         }
 
-        window.onload = () => { fetchUsersList(true); };
+        async function processCoins(type) {
+            const admin = checkAdmin(); if(!admin) return;
+            const userId = document.getElementById(type + 'UserId').value;
+            const amountStr = document.getElementById(type + 'Amount').value;
+            const reason = document.getElementById(type + 'Reason').value.trim();
+            
+            if(!userId || !globalUsers[userId]) return showMsg("تنبيه", "الرجاء اختيار عضو من قائمة البحث!");
+            if(!amountStr || !reason) return showMsg("تنبيه", "جميع الحقول إجبارية!");
+            
+            let amount = Number(amountStr);
+            if(amount === 0) return showMsg("تنبيه", "لا يمكن إضافة أو خصم 0 عملات!", "var(--primary)");
+            
+            amount = Math.abs(amount); 
+            if(type === 'deduct') amount = -amount; 
 
-        function showTab(tabId) {
-            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-            document.getElementById('status').style.display = "none";
+            let newBalance = Number(globalUsers[userId].balance) + amount;
+            let dateStr = new Date().toLocaleDateString('en-GB');
+
+            try {
+                await fetch(`${FB_URL}/users/${userId}.json`, { method: 'PATCH', body: JSON.stringify({ balance: newBalance }) });
+                await fetch(`${FB_URL}/ledger.json`, { method: 'POST', body: JSON.stringify({ date: dateStr, name: globalUsers[userId].name, amount: amount, note: reason, admin: admin }) });
+                
+                showMsg("نجاح", `تم التحديث! الرصيد الجديد: ${newBalance}`);
+                document.getElementById(type + 'Search').value = ''; document.getElementById(type + 'Amount').value = ''; document.getElementById(type + 'Reason').value = '';
+                fetchUsers();
+            } catch(e) { showMsg("خطأ", "فشل التحديث"); }
         }
 
-        function openLedger(userLink, userName) {
-            document.getElementById('modalTitle').innerText = 'سجل عمليات: ' + userName;
-            const tbody = document.getElementById('ledgerBody');
+        function confirmDelete() {
+            const admin = checkAdmin(); if(!admin) return;
+            const userId = document.getElementById('delUserId').value;
+            if(!userId || !globalUsers[userId]) return showMsg("تنبيه", "الرجاء اختيار العضو من البحث أولاً!");
+
+            const user = globalUsers[userId];
+            document.getElementById('confirmText').innerText = `أنت على وشك حذف العضو [ ${user.name} ]\nهذا العضو يمتلك [ ${user.balance} ] عملة.\n\nهل أنت متأكد من نقله لسجل المحذوفين؟`;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        async function executeDelete() {
+            const userId = document.getElementById('delUserId').value;
+            const admin = document.getElementById('adminName').value;
+            const user = globalUsers[userId];
+            document.getElementById('confirmModal').style.display = 'none';
+            let dateStr = new Date().toLocaleDateString('en-GB');
+
+            try {
+                await fetch(`${FB_URL}/deleted.json`, { method: 'POST', body: JSON.stringify({ date: dateStr, name: user.name, link: user.link, admin: admin }) });
+                await fetch(`${FB_URL}/ledger.json`, { method: 'POST', body: JSON.stringify({ date: dateStr, name: user.name, amount: 0, note: "تم حذف العضو برمجياً", admin: admin }) });
+                await fetch(`${FB_URL}/users/${userId}.json`, { method: 'DELETE' });
+                
+                showMsg("تم الحذف", `تمت إزالة ${user.name} بنجاح!`, "var(--primary)");
+                document.getElementById('delSearch').value = '';
+                fetchUsers();
+            } catch(e) { showMsg("خطأ", "فشل الحذف"); }
+        }
+
+        function loadUsersTable() {
+            const tbody = document.getElementById('usersTableBody');
             tbody.innerHTML = '';
-            
-            const userHistory = globalLedger.filter(l => l.link === userLink);
-            
-            if(userHistory.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا يوجد سجل عمليات لهذا العضو.</td></tr>';
-            } else {
-                userHistory.reverse().forEach(item => {
+            let usersArray = Object.values(globalUsers).sort((a,b) => b.balance - a.balance);
+            if(usersArray.length === 0) { tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">لا يوجد أعضاء</td></tr>'; return;}
+            usersArray.forEach(user => {
+                tbody.innerHTML += `<tr class="user-row" onclick="openLedger('${user.name}')"><td>${user.name}</td><td style="color:var(--gold); font-weight:bold;">${user.balance}</td></tr>`;
+            });
+        }
+
+        async function openLedger(userName) {
+            document.getElementById('ledgerTitle').innerText = 'سجل: ' + userName;
+            const tbody = document.getElementById('ledgerBody');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">جاري جلب السجل...</td></tr>';
+            document.getElementById('ledgerModal').style.display = 'flex';
+
+            try {
+                const res = await fetch(`${FB_URL}/ledger.json`);
+                const data = await res.json();
+                tbody.innerHTML = '';
+                if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا يوجد سجل لهذا العضو.</td></tr>'; return; }
+                
+                const history = Object.values(data).filter(item => item.name === userName);
+                if(history.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا يوجد سجل لهذا العضو.</td></tr>'; return; }
+                
+                history.reverse().forEach(item => {
                     let amountStr = Number(item.amount);
                     let color = amountStr > 0 ? '#28a745' : (amountStr < 0 ? '#ff4d4d' : '#888');
-                    let dateStr = new Date(item.date).toLocaleDateString('en-GB') || item.date;
-                    if(dateStr === "Invalid Date") dateStr = item.date;
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="color:#aaa;">${dateStr}</td>
-                            <td style="color:${color}; font-weight:bold; direction:ltr;">${amountStr}</td>
-                            <td>${item.note}</td>
-                            <td>${item.admin}</td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr>
+                        <td style="color:#aaa;">${item.date}</td>
+                        <td style="color:${color}; direction:ltr; font-weight:bold;">${amountStr}</td>
+                        <td>${item.note}</td>
+                        <td style="color:var(--gold);">${item.admin}</td>
+                    </tr>`;
                 });
-            }
-            document.getElementById('ledgerModal').style.display = 'block';
-        }
-
-        function closeModal() { document.getElementById('ledgerModal').style.display = 'none'; }
-
-        async function submitForm(actionType) {
-            const pass = document.getElementById('globalPass').value;
-            const admin = document.getElementById('globalAdminName').value;
-            
-            if(!pass || !admin) { showMsg("الرجاء إدخال الرمز السري واسم المسؤول في الأعلى!", "#ff4d4d", "#330000"); return; }
-
-            let payload = { password: pass, adminName: admin, action: actionType };
-
-            if(actionType === 'add_member') {
-                payload.identifier = document.getElementById('addLink').value;
-                payload.name = document.getElementById('addName').value;
-                if(!payload.identifier || !payload.name) { showMsg("جميع الحقول إجبارية!", "#ff4d4d", "#330000"); return; }
-            }
-            else if(actionType === 'delete_member') {
-                payload.identifier = document.getElementById('delIdentifier').value;
-                if(!payload.identifier) { showMsg("يجب كتابة اسم العضو للإزالة!", "#ff4d4d", "#330000"); return; }
-                if(!confirm("هل أنت متأكد من إزالة هذا العضو؟")) return;
-            }
-            else if(actionType === 'add_coins' || actionType === 'deduct_coins') {
-                const prefix = actionType === 'add_coins' ? 'addCoin' : 'deduct';
-                payload.identifier = document.getElementById(prefix + 'Identifier').value;
-                payload.amount = document.getElementById(prefix + 'Amount').value;
-                payload.reason = document.getElementById(prefix + 'Reason').value;
-                
-                if(!payload.identifier || !payload.amount || !payload.reason) { showMsg("جميع الحقول إجبارية!", "#ff4d4d", "#330000"); return; }
-                
-                if(Number(payload.amount) === 0) {
-                    showMsg("لا يمكن إضافة أو خصم 0 عملات!", "#ff4d4d", "#330000"); return;
-                }
-            }
-
-            showMsg("⏳ جاري إرسال الطلب...", "#ffd700", "#332b00");
-
-            try {
-                const response = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-                const result = await response.json();
-                
-                if(result.success) {
-                    showMsg("✔️ " + result.message, "#28a745", "#0a2911");
-                    document.querySelectorAll('.form-section.active input[type="text"], .form-section.active input[type="number"]').forEach(inpt => inpt.value = '');
-                    fetchUsersList(true); // تحديث إجباري بعد الإضافة أو الخصم
-                } else {
-                    showMsg("❌ " + result.error, "#ff4d4d", "#330000");
-                }
-            } catch (error) {
-                showMsg("❌ خطأ في الاتصال بالإنترنت.", "#ff4d4d", "#330000");
-            }
-        }
-
-        function showMsg(msg, color, bgColor) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.style.display = 'block';
-            statusDiv.style.color = color;
-            statusDiv.style.backgroundColor = bgColor;
-            statusDiv.style.border = `1px solid ${color}`;
-            statusDiv.innerText = msg;
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">خطأ في جلب السجل.</td></tr>'; }
         }
     </script>
 </body>
