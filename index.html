@@ -3,25 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-width=1.0">
-    <title>امبراطورية الأنمي | بنك العملات</title>
+    <title>امبراطورية الأنمي | الخزينة</title>
     <style>
-        :root { --bg-color: #050505; --surface-color: #111; --primary-color: #e60000; --text-color: #f2f2f2; --glow: 0 0 15px rgba(230, 0, 0, 0.6); }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; text-align: center; background-image: radial-gradient(circle at 50% 0%, #2a0000 0%, #050505 60%); background-attachment: fixed; }
-        h1 { color: #fff; text-shadow: var(--glow); font-size: 2.8em; margin-bottom: 5px; letter-spacing: 2px; }
-        p.subtitle { color: #aaa; margin-bottom: 30px; font-size: 1.1em; }
-        .container { max-width: 700px; margin: auto; background: rgba(17, 17, 17, 0.85); padding: 30px; border-radius: 15px; border: 1px solid #330000; box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(230,0,0,0.1); backdrop-filter: blur(5px); }
-        input[type="text"] { width: 85%; padding: 15px; margin-bottom: 25px; background: #0a0a0a; border: 1px solid var(--primary-color); color: white; border-radius: 8px; outline: none; font-size: 16px; transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
-        input[type="text"]:focus { box-shadow: var(--glow); }
+        :root { 
+            --bg-dark: #19171b; 
+            --surface: #252628; 
+            --primary: #5d0018; 
+            --gold: #d29f22; 
+            --text: #f2f2f2; 
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: var(--text); margin: 0; padding: 20px; text-align: center; }
+        
+        h1 { color: var(--gold); font-size: 2.5em; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(210, 159, 34, 0.3); }
+        p.subtitle { color: #888; margin-bottom: 30px; font-size: 1.1em; }
+        
+        .container { max-width: 700px; margin: auto; background: var(--surface); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
+        
+        input[type="text"] { width: 85%; padding: 15px; margin-bottom: 25px; background: var(--bg-dark); border: 1px solid var(--primary); color: white; border-radius: 8px; outline: none; font-size: 16px; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        input[type="text"]:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(210, 159, 34, 0.3); }
+        
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        th { padding: 15px; background-color: var(--primary-color); color: white; text-transform: uppercase; }
+        th { padding: 15px; background-color: var(--primary); color: var(--gold); text-transform: uppercase; }
         th:first-child { border-radius: 0 8px 8px 0; }
         th:last-child { border-radius: 8px 0 0 8px; }
-        td { padding: 15px; background: #1a1a1a; font-size: 1.1em; }
-        td:first-child { border-radius: 0 8px 8px 0; font-weight: bold; color: #888;}
-        td:last-child { border-radius: 8px 0 0 8px; color: var(--primary-color); font-weight: bold;}
-        tr:hover td { background-color: #252525; transform: scale(1.01); transition: 0.2s; }
-        .loading { color: var(--primary-color); font-size: 1.2em; margin: 20px; display: none; text-shadow: var(--glow);}
-        .rank-1 { color: #ffd700 !important; font-size: 1.3em; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        
+        td { padding: 15px; background: var(--bg-dark); font-size: 1.1em; border-top: 1px solid #333; border-bottom: 1px solid #333;}
+        td:first-child { border-radius: 0 8px 8px 0; font-weight: bold; color: #888; border-right: 1px solid #333;}
+        td:last-child { border-radius: 8px 0 0 8px; color: var(--gold); font-weight: bold; border-left: 1px solid #333;}
+        tr:hover td { background-color: #1f1d22; transform: scale(1.01); transition: 0.2s; border-color: var(--gold); }
+        
+        .loading { color: var(--gold); font-size: 1.2em; margin: 20px; display: none; }
+        .rank-1 { color: #fff !important; text-shadow: 0 0 10px var(--gold); }
     </style>
 </head>
 <body>
@@ -30,43 +42,40 @@
     <p class="subtitle">♛ الخزينة الإمبراطورية الرسمية ♛</p>
 
     <div class="container">
-        <input type="text" id="searchInput" placeholder="ابحث باسم اللقب أو رابط الحساب..." onkeyup="filterTable()">
+        <!-- أضفنا autocomplete="off" لتعطيل تاريخ المتصفح المزعج -->
+        <input type="text" id="searchInput" placeholder="ابحث باسم اللقب أو رابط الحساب..." onkeyup="filterTable()" autocomplete="off">
         <div id="loading" class="loading">جاري فتح أبواب الخزينة... ⏳</div>
         <table>
             <thead>
-                <tr>
-                    <th>المركز</th>
-                    <th>اللقب</th>
-                    <th>العملات</th>
-                </tr>
+                <tr><th>المركز</th><th>اللقب</th><th>العملات</th></tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwi7NYfcZVfqdcJtJFv4rFdljG1CaAal_SZSDoQ7XDuyhHlIv4n1YLmUxugsUptRyg/exec";
+        // رابط قاعدة بياناتك الجديدة
+        const FB_URL = "https://anime-empire-55fc0-default-rtdb.firebaseio.com";
         let usersData = [];
 
         async function loadData() {
             document.getElementById('loading').style.display = 'block';
             try {
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
+                const res = await fetch(`${FB_URL}/users.json`);
+                const data = await res.json();
                 
-                // حماية ضد الأخطاء
-                usersData = data.users ? data.users : (Array.isArray(data) ? data : []); 
-                usersData.sort((a, b) => b.balance - a.balance);
-                
-                if(usersData.length === 0) {
-                     document.getElementById('tableBody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: #888;">لا يوجد أعضاء حتى الآن</td></tr>';
+                if(!data) {
+                    document.getElementById('tableBody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: #888;">لا يوجد أعضاء في الخزينة بعد</td></tr>';
                 } else {
-                     renderTable(usersData);
+                    // تحويل بيانات Firebase إلى مصفوفة للترتيب
+                    usersData = Object.values(data);
+                    usersData.sort((a, b) => b.balance - a.balance);
+                    renderTable(usersData);
                 }
-                document.getElementById('loading').style.display = 'none';
             } catch (error) {
-                document.getElementById('loading').innerHTML = '❌ عذراً، حدث خطأ في الاتصال. يرجى تحديث الصفحة.';
+                document.getElementById('loading').innerHTML = '❌ عذراً، حدث خطأ في الاتصال بخوادم الإمبراطورية.';
             }
+            document.getElementById('loading').style.display = 'none';
         }
 
         function renderTable(data) {
