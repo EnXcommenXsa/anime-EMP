@@ -5,46 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-width=1.0">
     <title>امبراطورية الأنمي | الخزينة</title>
     <style>
-        :root { 
-            --bg-dark: #19171b; 
-            --surface: #252628; 
-            --primary: #5d0018; 
-            --gold: #d29f22; 
-            --text: #f2f2f2; 
+        :root {
+            --bg-color: #050505;
+            --surface-color: #111;
+            --primary-color: #e60000;
+            --text-color: #f2f2f2;
+            --glow: 0 0 15px rgba(230, 0, 0, 0.6);
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: var(--text); margin: 0; padding: 20px; text-align: center; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; text-align: center; background-image: radial-gradient(circle at 50% 0%, #2a0000 0%, #050505 60%); background-attachment: fixed; }
         
-        h1 { color: var(--gold); font-size: 2.5em; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(210, 159, 34, 0.3); }
-        p.subtitle { color: #888; margin-bottom: 30px; font-size: 1.1em; }
+        h1 { color: #fff; text-shadow: var(--glow); font-size: 2.8em; margin-bottom: 5px; letter-spacing: 2px; }
+        p.subtitle { color: #aaa; margin-bottom: 30px; font-size: 1.1em; }
         
-        .container { max-width: 700px; margin: auto; background: var(--surface); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
+        .container { max-width: 700px; margin: auto; background: rgba(17, 17, 17, 0.85); padding: 30px; border-radius: 15px; border: 1px solid #330000; box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(230,0,0,0.1); backdrop-filter: blur(5px); }
         
-        input[type="text"] { width: 85%; padding: 15px; margin-bottom: 25px; background: var(--bg-dark); border: 1px solid var(--primary); color: white; border-radius: 8px; outline: none; font-size: 16px; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
-        input[type="text"]:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(210, 159, 34, 0.3); }
+        input[type="text"] { width: 85%; padding: 15px; margin-bottom: 25px; background: #0a0a0a; border: 1px solid var(--primary-color); color: white; border-radius: 8px; outline: none; font-size: 16px; transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
+        input[type="text"]:focus { box-shadow: var(--glow); }
         
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        th { padding: 15px; background-color: var(--primary); color: var(--gold); text-transform: uppercase; }
+        th { padding: 15px; background-color: var(--primary-color); color: white; text-transform: uppercase; }
         th:first-child { border-radius: 0 8px 8px 0; }
         th:last-child { border-radius: 8px 0 0 8px; }
         
-        td { padding: 15px; background: var(--bg-dark); font-size: 1.1em; border-top: 1px solid #333; border-bottom: 1px solid #333;}
-        td:first-child { border-radius: 0 8px 8px 0; font-weight: bold; color: #888; border-right: 1px solid #333;}
-        td:last-child { border-radius: 8px 0 0 8px; color: var(--gold); font-weight: bold; border-left: 1px solid #333;}
-        tr:hover td { background-color: #1f1d22; transform: scale(1.01); transition: 0.2s; border-color: var(--gold); }
+        td { padding: 15px; background: #1a1a1a; font-size: 1.1em; }
+        td:first-child { border-radius: 0 8px 8px 0; font-weight: bold; color: #888;}
+        td:last-child { border-radius: 8px 0 0 8px; color: var(--primary-color); font-weight: bold;}
+        tr:hover td { background-color: #252525; transform: scale(1.01); transition: 0.2s; }
         
-        .loading { color: var(--gold); font-size: 1.2em; margin: 20px; display: none; }
-        .rank-1 { color: #fff !important; text-shadow: 0 0 10px var(--gold); }
+        .loading { color: var(--primary-color); font-size: 1.2em; margin: 20px; display: none; text-shadow: var(--glow);}
+        .rank-1 { color: #fff !important; text-shadow: var(--glow); }
     </style>
 </head>
 <body>
 
     <h1>امبراطورية الأنمي</h1>
-    <p class="subtitle">♛ الخزينة الإمبراطورية الرسمية ♛</p>
+    <p class="subtitle">الخزينة الإمبراطورية الرسمية</p>
 
     <div class="container">
-        <!-- أضفنا autocomplete="off" لتعطيل تاريخ المتصفح المزعج -->
         <input type="text" id="searchInput" placeholder="ابحث باسم اللقب أو رابط الحساب..." onkeyup="filterTable()" autocomplete="off">
-        <div id="loading" class="loading">جاري فتح أبواب الخزينة... ⏳</div>
+        <div id="loading" class="loading">جاري فتح أبواب الخزينة...</div>
         <table>
             <thead>
                 <tr><th>المركز</th><th>اللقب</th><th>العملات</th></tr>
@@ -54,7 +53,6 @@
     </div>
 
     <script>
-        // رابط قاعدة بياناتك الجديدة
         const FB_URL = "https://anime-empire-55fc0-default-rtdb.firebaseio.com";
         let usersData = [];
 
@@ -64,16 +62,28 @@
                 const res = await fetch(`${FB_URL}/users.json`);
                 const data = await res.json();
                 
-                if(!data) {
+                usersData = [];
+                if (data) {
+                    // فلترة وتخطي أي بيانات تالفة (undefined)
+                    Object.values(data).forEach(user => {
+                        if (user && user.name) {
+                            usersData.push({
+                                name: user.name,
+                                link: user.link || '',
+                                balance: Number(user.balance) || 0
+                            });
+                        }
+                    });
+                }
+
+                if(usersData.length === 0) {
                     document.getElementById('tableBody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: #888;">لا يوجد أعضاء في الخزينة بعد</td></tr>';
                 } else {
-                    // تحويل بيانات Firebase إلى مصفوفة للترتيب
-                    usersData = Object.values(data);
                     usersData.sort((a, b) => b.balance - a.balance);
                     renderTable(usersData);
                 }
             } catch (error) {
-                document.getElementById('loading').innerHTML = '❌ عذراً، حدث خطأ في الاتصال بخوادم الإمبراطورية.';
+                document.getElementById('loading').innerHTML = 'عذراً، حدث خطأ في الاتصال.';
             }
             document.getElementById('loading').style.display = 'none';
         }
@@ -83,7 +93,7 @@
             tbody.innerHTML = '';
             data.forEach((user, index) => {
                 const rankClass = index === 0 ? 'rank-1' : '';
-                const rankText = index === 0 ? '👑 1' : index + 1;
+                const rankText = index + 1;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="${rankClass}">${rankText}</td>
@@ -97,8 +107,8 @@
         function filterTable() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filteredData = usersData.filter(user => 
-                (user.name && user.name.toLowerCase().includes(query)) || 
-                (user.link && user.link.toLowerCase().includes(query))
+                user.name.toLowerCase().includes(query) || 
+                user.link.toLowerCase().includes(query)
             );
             renderTable(filteredData);
         }
