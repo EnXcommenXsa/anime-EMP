@@ -6,57 +6,57 @@
     <title>إدارة الإمبراطورية | سري</title>
     <style>
         :root { 
-            --bg-dark: #19171b; 
-            --surface: #252628; 
-            --primary: #5d0018; 
-            --gold: #d29f22; 
-            --text: #f2f2f2; 
+            --bg-color: #050505; 
+            --surface-color: #111; 
+            --primary-color: #e60000; 
+            --text-color: #f2f2f2; 
+            --glow: 0 0 10px rgba(230, 0, 0, 0.5);
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: var(--text); margin: 0; padding: 0; padding-bottom: 80px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; padding-bottom: 80px; background-image: radial-gradient(circle at 50% 0%, #2a0000 0%, #050505 60%); background-attachment: fixed; }
         
-        .header { background: #0a080c; padding: 20px; text-align: center; border-bottom: 2px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 10; }
-        .header h2 { margin: 0; color: var(--gold); font-size: 22px; letter-spacing: 1px; }
+        .header { background: #0a0a0a; padding: 20px; text-align: center; border-bottom: 1px solid var(--primary-color); box-shadow: var(--glow); position: sticky; top: 0; z-index: 10; }
+        .header h2 { margin: 0; color: #fff; font-size: 22px; letter-spacing: 1px; text-shadow: var(--glow); }
 
         .container { padding: 20px; max-width: 600px; margin: auto; }
         
         /* شاشة تسجيل الدخول */
-        #login-section { display: block; background: var(--surface); padding: 30px; border-radius: 12px; border: 1px solid var(--primary); margin-top: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        #dashboard-section { display: none; } /* يظهر فقط بعد الدخول */
+        #login-section { display: block; background: rgba(17, 17, 17, 0.9); padding: 30px; border-radius: 12px; border: 1px solid #330000; margin-top: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        #dashboard-section { display: none; }
 
-        .form-section { display: none; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: fadeIn 0.3s ease; }
+        .form-section { display: none; background: rgba(17, 17, 17, 0.9); padding: 20px; border-radius: 12px; border: 1px solid #330000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: fadeIn 0.3s ease; backdrop-filter: blur(5px); }
         .form-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         label { display: block; margin: 15px 0 8px; color: #bbb; font-size: 14px; font-weight: bold; text-align: right; }
-        input { width: 100%; box-sizing: border-box; padding: 14px; background: var(--bg-dark); border: 1px solid #444; color: white; border-radius: 8px; font-size: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--gold); box-shadow: inset 0 0 8px rgba(210, 159, 34, 0.3); }
+        input { width: 100%; box-sizing: border-box; padding: 14px; background: #0a0a0a; border: 1px solid #333; color: white; border-radius: 8px; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary-color); box-shadow: inset 0 0 8px rgba(230,0,0,0.3); }
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         
         .search-container { position: relative; }
-        .search-results { position: absolute; width: 100%; background: var(--bg-dark); border: 1px solid var(--gold); border-top: none; border-radius: 0 0 8px 8px; max-height: 150px; overflow-y: auto; z-index: 20; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
-        .search-item { padding: 12px; border-bottom: 1px solid #333; cursor: pointer; color: white; font-size: 14px; transition: 0.2s; text-align: right; }
-        .search-item:hover { background: var(--primary); color: var(--gold); }
+        .search-results { position: absolute; width: 100%; background: #0a0a0a; border: 1px solid var(--primary-color); border-top: none; border-radius: 0 0 8px 8px; max-height: 150px; overflow-y: auto; z-index: 20; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+        .search-item { padding: 12px; border-bottom: 1px solid #222; cursor: pointer; color: white; font-size: 14px; transition: 0.2s; text-align: right; }
+        .search-item:hover { background: #222; color: var(--primary-color); }
 
-        .submit-btn { width: 100%; padding: 15px; margin-top: 25px; color: var(--gold); background: var(--primary); border: 1px solid var(--primary); border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .submit-btn { width: 100%; padding: 15px; margin-top: 25px; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .submit-btn:active { transform: scale(0.98); opacity: 0.9; }
-        .btn-red { background: linear-gradient(45deg, #5d0018, #8b0024); color: white; }
-        .btn-green { background: linear-gradient(45deg, #1e7e34, #28a745); color: white; border-color: #1e7e34; }
-        .btn-dark { background: linear-gradient(45deg, #222, #444); border: 1px solid #555; color: white; }
+        .btn-red { background: linear-gradient(45deg, #8b0000, #d10000); box-shadow: 0 4px 15px rgba(209, 0, 0, 0.4); }
+        .btn-green { background: linear-gradient(45deg, #1e7e34, #28a745); }
+        .btn-dark { background: linear-gradient(45deg, #222, #444); border: 1px solid #555; }
 
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0a080c; display: flex; border-top: 1px solid #333; z-index: 100; padding-bottom: env(safe-area-inset-bottom); display: none; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0a0a0a; display: flex; border-top: 1px solid #333; z-index: 100; padding-bottom: env(safe-area-inset-bottom); display: none; }
         .nav-item { flex: 1; padding: 18px 5px; text-align: center; color: #888; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .nav-item.active { color: var(--gold); background: rgba(93, 0, 24, 0.3); border-top: 2px solid var(--gold); }
+        .nav-item.active { color: white; background: rgba(230, 0, 0, 0.15); border-top: 2px solid var(--primary-color); }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
-        .modal-box { background: var(--surface); width: 85%; max-width: 400px; padding: 25px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); animation: popIn 0.3s; }
+        .modal-box { background: #111; width: 85%; max-width: 400px; padding: 25px; border-radius: 15px; border: 1px solid var(--primary-color); text-align: center; box-shadow: var(--glow); animation: popIn 0.3s; }
         @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-box h3 { margin-top: 0; color: var(--gold); }
+        .modal-box h3 { margin-top: 0; color: #fff; text-shadow: var(--glow); }
         .modal-box p { color: #ccc; font-size: 15px; line-height: 1.5; margin-bottom: 25px; white-space: pre-line;}
-        .modal-btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px; }
+        .modal-btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px; color: white; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: var(--bg-dark); border-radius: 8px; overflow: hidden; border: 1px solid #444; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #333; }
-        th { background: var(--primary); color: var(--gold); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0a0a0a; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #222; }
+        th { background: var(--primary-color); color: white; }
         .user-row { cursor: pointer; transition: 0.2s; }
         .user-row:hover { background: #1a1a1a; }
         .ledger-modal .modal-box { max-width: 500px; width: 95%; padding: 15px; text-align: right; }
@@ -71,20 +71,20 @@
         
         <!-- شاشة تسجيل الدخول الآمنة -->
         <div id="login-section">
-            <h3 style="color:var(--gold); margin-top:0;">تسجيل دخول المشرفين</h3>
+            <h3 style="color:#fff; text-shadow:var(--glow); margin-top:0;">تسجيل دخول المشرفين</h3>
             <p style="color:#888; font-size:13px; margin-bottom:20px;">الرجاء إدخال بيانات المصادقة</p>
             <input type="email" id="authEmail" placeholder="البريد الإلكتروني..." autocomplete="off">
             <input type="password" id="authPass" placeholder="كلمة المرور..." style="margin-top:15px;">
             <input type="text" id="adminName" placeholder="اكتب اسمك الحقيقي (للسجل)" style="margin-top:15px;">
-            <button class="submit-btn" onclick="loginAdmin()">تسجيل الدخول</button>
+            <button class="submit-btn btn-red" onclick="loginAdmin()">تسجيل الدخول</button>
         </div>
 
-        <!-- اللوحة الرئيسية (مخفية حتى يتم الدخول) -->
+        <!-- اللوحة الرئيسية -->
         <div id="dashboard-section">
             
             <!-- 1. إضافة عضو -->
             <div id="tab-add" class="form-section active">
-                <h3 style="color:var(--gold); text-align:center; margin-top:0;">إضافة عضو جديد</h3>
+                <h3 style="color:#fff; text-align:center; margin-top:0;">إضافة عضو جديد</h3>
                 <label>رابط الحساب:</label>
                 <input type="text" id="newLink" placeholder="ألصق رابط العضو..." autocomplete="off">
                 <label>لقب العضو:</label>
@@ -94,7 +94,7 @@
 
             <!-- 2. العملات (مدمجة) -->
             <div id="tab-coins" class="form-section">
-                <h3 style="color:var(--gold); text-align:center; margin-top:0;">العملات (إضافة / خصم)</h3>
+                <h3 style="color:#fff; text-align:center; margin-top:0;">العملات (إضافة / خصم)</h3>
                 
                 <div class="search-container">
                     <label>ابحث عن العضو:</label>
@@ -117,7 +117,7 @@
 
             <!-- 3. إزالة عضو -->
             <div id="tab-del" class="form-section">
-                <h3 style="color:var(--primary); text-align:center; margin-top:0;">إزالة عضو نهائياً</h3>
+                <h3 style="color:#fff; text-align:center; margin-top:0;">إزالة عضو نهائياً</h3>
                 <div class="search-container">
                     <label>ابحث عن العضو للحذف:</label>
                     <input type="text" id="delSearch" placeholder="اكتب اللقب..." autocomplete="off" oninput="handleSearch(this.value, 'delResults', 'del')">
@@ -129,7 +129,7 @@
 
             <!-- 4. القائمة -->
             <div id="tab-list" class="form-section">
-                <h3 style="color:var(--gold); text-align:center; margin-top:0;">جميع الأعضاء</h3>
+                <h3 style="color:#fff; text-align:center; margin-top:0;">جميع الأعضاء</h3>
                 <p style="text-align:center; color:#888; font-size:12px;">انقر على أي عضو لعرض سجله</p>
                 <div style="max-height: 400px; overflow-y: auto;">
                     <table>
@@ -154,7 +154,7 @@
         <div class="modal-box">
             <h3 id="msgTitle">رسالة</h3>
             <p id="msgText"></p>
-            <button class="modal-btn btn-red" style="color:white;" onclick="document.getElementById('msgModal').style.display='none'">حسناً</button>
+            <button class="modal-btn btn-red" onclick="document.getElementById('msgModal').style.display='none'">حسناً</button>
         </div>
     </div>
 
@@ -163,13 +163,13 @@
             <h3>تأكيد الحذف</h3>
             <p id="confirmText"></p>
             <button class="modal-btn btn-dark" onclick="document.getElementById('confirmModal').style.display='none'">إلغاء</button>
-            <button class="modal-btn btn-red" style="color:white;" onclick="executeDelete()">نعم، احذف</button>
+            <button class="modal-btn btn-red" onclick="executeDelete()">نعم، احذف</button>
         </div>
     </div>
 
     <div id="ledgerModal" class="modal-overlay ledger-modal">
         <div class="modal-box">
-            <h3 id="ledgerTitle" style="color:var(--gold); text-align:center; margin-top:0;">سجل العضو</h3>
+            <h3 id="ledgerTitle" style="color:#fff; text-align:center; margin-top:0; text-shadow:var(--glow);">سجل العضو</h3>
             <div style="max-height: 300px; overflow-y: auto;">
                 <table class="ledger-table">
                     <thead><tr><th>التاريخ</th><th>المبلغ</th><th>السبب</th><th>المسؤول</th></tr></thead>
@@ -181,7 +181,6 @@
     </div>
 
     <script>
-        // إعدادات Firebase الخاصة بك
         const API_KEY = "AIzaSyBDORLuYRFJdIC8SxLyoUV42JSsfMQixEs";
         const DB_URL = "https://anime-empire-55fc0-default-rtdb.europe-west1.firebasedatabase.app";
         
@@ -194,7 +193,6 @@
             document.getElementById('msgModal').style.display = 'flex';
         }
 
-        // 1. نظام تسجيل الدخول الآمن
         async function loginAdmin() {
             const email = document.getElementById('authEmail').value.trim();
             const pass = document.getElementById('authPass').value;
@@ -205,7 +203,6 @@
             showMsg("انتظر", "جاري التحقق من الهوية...");
             
             try {
-                // الاتصال بخوادم مصادقة جوجل
                 const authRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -216,7 +213,6 @@
                 
                 if(!authRes.ok) throw new Error(authData.error.message);
                 
-                // حفظ التصريح السري
                 authToken = authData.idToken;
                 sessionStorage.setItem('adminName', name);
 
@@ -231,11 +227,9 @@
             }
         }
 
-        // جلب الأعضاء (يستخدم التصريح)
         async function fetchUsers() {
             if(!authToken) return;
             try {
-                // إضافة ?auth= للتصريح بالدخول للقاعدة
                 let res = await fetch(`${DB_URL}/users.json?auth=${authToken}`);
                 let data = await res.json() || {};
                 globalUsers = {};
@@ -368,7 +362,7 @@
             let usersArray = Object.values(globalUsers).sort((a,b) => b.balance - a.balance);
             if(usersArray.length === 0) { tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">لا يوجد أعضاء</td></tr>'; return;}
             usersArray.forEach(user => {
-                tbody.innerHTML += `<tr class="user-row" onclick="openLedger('${user.name}')"><td>${user.name}</td><td style="color:var(--gold); font-weight:bold;">${user.balance}</td></tr>`;
+                tbody.innerHTML += `<tr class="user-row" onclick="openLedger('${user.name}')"><td>${user.name}</td><td style="color:#fff; font-weight:bold;">${user.balance}</td></tr>`;
             });
         }
 
