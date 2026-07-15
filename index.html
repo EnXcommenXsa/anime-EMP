@@ -53,14 +53,12 @@
     </div>
 
     <script>
-        // الرابط الصحيح לקاعدة بياناتك
         const DB_URL = "https://anime-empire-55fc0-default-rtdb.europe-west1.firebasedatabase.app";
         let usersData = [];
 
         async function loadData() {
             document.getElementById('loading').style.display = 'block';
             try {
-                // القراءة مسموحة للجميع حسب الـ Rules
                 const res = await fetch(`${DB_URL}/users.json`);
                 const data = await res.json();
                 
